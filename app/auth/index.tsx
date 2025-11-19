@@ -1,5 +1,5 @@
 import ImageButton from "@/components/button/ImageButton";
-import RoundButton from "@/components/button/RoundButton";
+import BorderButton from "@/components/button/BorderButton";
 import TextButton from "@/components/button/TextButton";
 import { colors, fonts } from "@/constants";
 import { router } from "expo-router";
@@ -50,7 +50,7 @@ export default function AuthScreen() {
           <View style={styles.line} />
         </View>
         <View style={styles.roundButtonContainer}>
-          <RoundButton
+          <BorderButton
             title="이메일로 로그인"
             height={40}
             fontSize={14}

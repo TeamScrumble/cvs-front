@@ -3,7 +3,7 @@ import { colors, fonts } from "@/constants";
 import React from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 
-interface RoundButtonProps {
+interface BorderButtonProps {
   title: string;
   height: number;
   fontFamily?: FontFamilyType;
@@ -13,7 +13,7 @@ interface RoundButtonProps {
   onPress?: () => void;
 }
 
-function RoundButton({
+function BorderButton({
   title,
   height,
   fontFamily = fonts.REGULAR,
@@ -21,7 +21,7 @@ function RoundButton({
   color = colors.SLATE_800,
   backgroundColor = colors.WHITE,
   onPress = () => {},
-}: RoundButtonProps) {
+}: BorderButtonProps) {
   return (
     <Pressable
       style={[
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RoundButton;
+export default BorderButton;
