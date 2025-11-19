@@ -13,6 +13,7 @@ export default function AuthScreen() {
         <View style={styles.textButtonContainer}>
           <TextButton
             title="둘러보기"
+            fontSize={14}
             paddingHorizontal={12}
             color={colors.GRAY}
             onPress={() => router.push("/")}
