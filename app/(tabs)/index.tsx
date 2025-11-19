@@ -15,6 +15,7 @@ export default function HomeScreen() {
           <View style={styles.menuContainer}>
             <TextButton
               title="편:편"
+              fontSize={20}
               fontFamily={fonts.CHAB}
               color={colors.MAIN}
             />
