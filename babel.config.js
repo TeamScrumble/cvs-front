@@ -9,9 +9,9 @@ module.exports = function (api) {
           icons: [
             "material-symbols-light:home-rounded",
             "material-symbols-light:home-outline-rounded",
-            "material-symbols-light:search-rounded",
             "material-symbols-light:person-rounded",
             "material-symbols-light:person-outline-rounded",
+            "circum:search",
             "ph:heart-light",
             "ph:heart-fill",
             "fluent:alert-20-regular",

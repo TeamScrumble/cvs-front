@@ -26,7 +26,7 @@ const fonts = {
 const icons = {
   home: "material-symbols-light:home-rounded",
   homeOutline: "material-symbols-light:home-outline-rounded",
-  search: "material-symbols-light:search-rounded",
+  search: "circum:search",
   person: "material-symbols-light:person-rounded",
   personOutline: "material-symbols-light:person-outline-rounded",
   heartLight: "ph:heart-light",
