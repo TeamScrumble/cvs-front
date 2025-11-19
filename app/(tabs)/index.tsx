@@ -24,7 +24,7 @@ export default function HomeScreen() {
           </View>
           <View style={styles.iconContainer}>
             <IconButton icon={icons.search} />
-            <IconButton icon={icons.alert} />
+            <IconButton icon={icons.alert} hasDot />
           </View>
         </View>
       </View>
