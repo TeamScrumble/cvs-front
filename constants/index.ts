@@ -15,12 +15,14 @@ const fontMap = {
   chab: require("@/assets/fonts/chab.ttf"),
   regular: require("@/assets/fonts/Pretendard-Regular.ttf"),
   semiBold: require("@/assets/fonts/Pretendard-SemiBold.ttf"),
+  bold: require("@/assets/fonts/Pretendard-Bold.ttf"),
 };
 
 const fonts = {
   CHAB: "chab",
   REGULAR: "regular",
   SEMI_BOLD: "semiBold",
+  BOLD: "bold",
 } as const;
 
 const icons = {
@@ -36,4 +38,13 @@ const icons = {
 
 const queryKeys = {};
 
-export { colors, fontMap, fonts, icons, queryKeys };
+const loginProvider = {
+  KAKAO: "kakao",
+  NAVER: "naver",
+  GOOGLE: "google",
+  EMAIL: "email",
+} as const;
+
+type LoginProvider = typeof loginProvider[keyof typeof loginProvider] | null;
+
+export { colors, fontMap, fonts, icons, queryKeys, loginProvider, LoginProvider };
