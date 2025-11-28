@@ -68,7 +68,7 @@ export default function AuthScreen() {
             />
           </View>
         </View>
-        <View style={styles.textContainer}>
+        {/* <View style={styles.textContainer}>
           <View style={styles.line} />
           <Text
             style={{ fontFamily: "regular", color: colors.GRAY, fontSize: 12 }}
@@ -87,7 +87,7 @@ export default function AuthScreen() {
             fontSize={14}
             fontFamily={fonts.SEMI_BOLD}
           />
-        </View>
+        </View> */}
         <View style={styles.helpButtonContainer}>
           <TextButton
             title="로그인에 어려움이 있으신가요?"
@@ -114,11 +114,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   logoContainer: {
-    marginTop: 56,
+    marginTop: 130,
     alignItems: "center",
   },
   loginIconContainer: {
-    marginTop: 160,
+    marginTop: 220,
     flexDirection: "row",
     justifyContent: "center",
     gap: 16,
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   helpButtonContainer: {
-    marginTop: 24,
+    marginTop: 32,
     alignItems: "center",
   },
 });
