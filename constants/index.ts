@@ -1,12 +1,13 @@
 const colors = {
   MAIN: "#5DAA8F",
   BACKGROUND: "#F7EEDB",
-  SUB1: "#F2A65A",
-  SUB2: "#754D26",
-  BLACK: "#1D2027",
+  SUB: "#F2A65A",
+  SUB_FONT: "#754D26",
+  MAIN_FONT: "#1D2027",
   WHITE: "#FFFFFF",
   GRAY: "#999999",
   SLATE_200: "#DBDEE3",
+  SLATE_600: "#4B515B", 
   SLATE_500: "#717580",
   SLATE_800: "#1D2027",
 };
@@ -14,6 +15,7 @@ const colors = {
 const fontMap = {
   chab: require("@/assets/fonts/chab.ttf"),
   regular: require("@/assets/fonts/Pretendard-Regular.ttf"),
+  medium: require("@/assets/fonts/Pretendard-Medium.ttf"),
   semiBold: require("@/assets/fonts/Pretendard-SemiBold.ttf"),
   bold: require("@/assets/fonts/Pretendard-Bold.ttf"),
 };
@@ -34,6 +36,12 @@ const icons = {
   heartLight: "ph:heart-light",
   heartFill: "ph:heart-fill",
   alert: "fluent:alert-20-regular",
+  location: "material-symbols-light:location-on",
+  locationOutline: "material-symbols-light:location-on-outline",
+  downSquare: "icon-park-outline:down-square",
+  upSquare: "icon-park-outline:up-square",
+  chevronRightLine: "material-symbols-light:chevron-right-rounded",
+  chevronLeftLine: "material-symbols-light:chevron-left-rounded",
 };
 
 const queryKeys = {};
@@ -45,6 +53,33 @@ const loginProvider = {
   EMAIL: "email",
 } as const;
 
-type LoginProvider = typeof loginProvider[keyof typeof loginProvider] | null;
+type LoginProvider = (typeof loginProvider)[keyof typeof loginProvider] | null;
 
-export { colors, fontMap, fonts, icons, queryKeys, loginProvider, LoginProvider };
+type Stores = "gs25" | "cu" | "7eleven" | "emart24";
+
+const stores: Record<Stores, { name: string }> = {
+  gs25: {
+    name: "GS25",
+  },
+  cu: {
+    name: "CU",
+  },
+  "7eleven": {
+    name: "7ELEVEN",
+  },
+  emart24: {
+    name: "emart24",
+  },
+}
+
+export {
+  colors,
+  fontMap,
+  fonts,
+  icons,
+  queryKeys,
+  loginProvider,
+  LoginProvider,
+  Stores,
+  stores,
+};

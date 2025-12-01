@@ -5,15 +5,16 @@ import Icon from "react-native-iconify";
 
 interface IconButtonProps {
   icon: string;
+  color?: string;
   hasDot?: boolean;
   size?: number;
   onPress?: () => void;
 }
 
-function IconButton({ icon, hasDot = false, size = 24, onPress = () => {} }: IconButtonProps) {
+function IconButton({ icon, color = colors.MAIN_FONT, hasDot = false, size = 24, onPress = () => { } }: IconButtonProps) {
   return (
     <Pressable onPress={onPress}>
-      <Icon icon={icon} size={size} />
+      <Icon icon={icon} size={size} color={color} />
       {hasDot && <View style={[styles.dot, { backgroundColor: colors.MAIN }]} />}
     </Pressable>
   );

@@ -35,6 +35,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="around"
+        options={{
+          title: "내 주변",
+          tabBarIcon: ({ color, focused }) => (
+            <Icon icon={focused ? icons.location : icons.locationOutline} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="like"
         options={{
           title: "좋아요",

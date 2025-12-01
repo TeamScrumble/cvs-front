@@ -1,7 +1,7 @@
 import { colors } from "@/constants";
 import { Stack } from "expo-router";
 
-export default function HomeLayout() {
+export default function AroundLayout() {
   return (
     <Stack
       screenOptions={{
@@ -13,15 +13,9 @@ export default function HomeLayout() {
     >
       <Stack.Screen
         name="index"
-        options={{
-          headerShown: false,
-          title: "홈"
-        }}
-      />
-      <Stack.Screen
-        name="[storeName]"
-        options={{
-          headerShown: false,
+        options={{ 
+          headerShown: false, 
+          title: "내 주변" 
         }}
       />
     </Stack>

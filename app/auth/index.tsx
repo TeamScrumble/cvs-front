@@ -1,13 +1,16 @@
-import ImageButton from "@/components/button/ImageButton";
 import BorderButton from "@/components/button/BorderButton";
 import TextButton from "@/components/button/TextButton";
 import { colors, fonts, LoginProvider, loginProvider } from "@/constants";
 import { router } from "expo-router";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getSecureStore } from "@/utils/secureStore";
 import Tooltip from "@/components/Tooltip";
 import { useEffect, useState } from "react";
+import Character from "@/assets/images/character.svg";
+import KakaoLoginIcon from "@/assets/images/login/kakao_login_icon.svg";
+import NaverLoginIcon from "@/assets/images/login/naver_login_icon.svg";
+import GoogleLoginIcon from "@/assets/images/login/google_login_icon.svg";
 
 export default function AuthScreen() {
   const [lastLogin, setLastLogin] = useState<LoginProvider>(null);
@@ -32,7 +35,7 @@ export default function AuthScreen() {
           />
         </View>
         <View style={styles.logoContainer}>
-          <Image source={require("@/assets/images/character.png")} width={66} />
+          <Character width={66} height={64} />
           <Text
             style={{ fontFamily: "chab", color: colors.MAIN, fontSize: 40 }}
           >
@@ -44,31 +47,31 @@ export default function AuthScreen() {
             {lastLogin === loginProvider.KAKAO && (
               <Tooltip content="최근 로그인" />
             )}
-            <ImageButton
-              source={require("@/assets/images/login/kakao_login_icon.png")}
-              size={54}
+            <KakaoLoginIcon
+              width={54}
+              height={54}
             />
           </View>
           <View style={styles.loginIconItem}>
             {lastLogin === loginProvider.NAVER && (
               <Tooltip content="최근 로그인" />
             )}
-            <ImageButton
-              source={require("@/assets/images/login/naver_login_icon.png")}
-              size={54}
+            <NaverLoginIcon
+              width={54}
+              height={54}
             />
           </View>
           <View style={styles.loginIconItem}>
             {lastLogin === loginProvider.GOOGLE && (
               <Tooltip content="최근 로그인" />
             )}
-            <ImageButton
-              source={require("@/assets/images/login/google_login_icon.png")}
-              size={54}
+            <GoogleLoginIcon
+              width={54}
+              height={54}
             />
           </View>
         </View>
-        {/* <View style={styles.textContainer}>
+        <View style={styles.textContainer}>
           <View style={styles.line} />
           <Text
             style={{ fontFamily: "regular", color: colors.GRAY, fontSize: 12 }}
@@ -87,7 +90,7 @@ export default function AuthScreen() {
             fontSize={14}
             fontFamily={fonts.SEMI_BOLD}
           />
-        </View> */}
+        </View>
         <View style={styles.helpButtonContainer}>
           <TextButton
             title="로그인에 어려움이 있으신가요?"
@@ -114,11 +117,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   logoContainer: {
-    marginTop: 130,
+    marginTop: 58,
     alignItems: "center",
   },
   loginIconContainer: {
-    marginTop: 220,
+    marginTop: 160,
     flexDirection: "row",
     justifyContent: "center",
     gap: 16,
@@ -145,7 +148,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   helpButtonContainer: {
-    marginTop: 32,
+    marginTop: 25,
     alignItems: "center",
+    paddingVertical: 10,
   },
 });
