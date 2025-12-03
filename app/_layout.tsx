@@ -2,8 +2,8 @@
 
 import { fontMap } from "@/constants";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import { router, Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
@@ -49,6 +49,14 @@ export default function RootLayout() {
       <Stack.Screen
         name="modal"
         options={{ presentation: "modal", title: "Modal" }}
+      />
+      <Stack.Screen
+        name="store-selection"
+        options={{
+          presentation: "transparentModal",
+          headerShown: false,
+          animation: "fade",
+        }}
       />
     </Stack>
   );

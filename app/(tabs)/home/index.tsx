@@ -1,16 +1,13 @@
 import IconButton from "@/components/button/IconButton";
-import StoreBottomSheet from "@/components/home/StoreBottomSheet";
 import { colors, fonts, icons } from "@/constants";
-import { useRef } from "react";
+import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const bottomSheetRef = useRef<any>(null);
-
   const handleOpenBottomSheet = () => {
-    bottomSheetRef.current?.expand();
+    router.push("/store-selection");
   };
 
   return (
@@ -31,7 +28,6 @@ export default function HomeScreen() {
             <IconButton icon={icons.alert} hasDot />
           </View>
         </View>
-        <StoreBottomSheet bottomSheetRef={bottomSheetRef} />
       </SafeAreaView>
     </GestureHandlerRootView>
   );
