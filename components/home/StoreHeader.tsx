@@ -1,11 +1,12 @@
 import IconButton from "@/components/button/IconButton";
-import { colors, icons, Stores } from "@/constants";
+import { colors, icons } from "@/constants";
 import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import GS25_Logo from "@/assets/images/stores/gs25_logo.svg";
 import CU_Logo from "@/assets/images/stores/cu_logo.svg";
 import Seven_Logo from "@/assets/images/stores/7eleven_logo.svg";
 import Emart24_Logo from "@/assets/images/stores/emart24_logo.svg";
+import { Stores } from "@/@types";
 
 const storeLogo: Record<Stores, () => React.ReactNode> = {
   gs25: () => <GS25_Logo width={76} height={24} />,

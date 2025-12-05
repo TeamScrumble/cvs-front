@@ -1,8 +1,9 @@
+import { stores, Stores } from "@/@types";
 import Seven_Icon from "@/assets/images/stores/7eleven_icon.svg";
 import CU_Icon from "@/assets/images/stores/cu_icon.svg";
 import Emart24_Icon from "@/assets/images/stores/emart24_icon.svg";
 import GS25_Icon from "@/assets/images/stores/gs25_icon.svg";
-import { colors, fontMap, icons, stores, Stores } from "@/constants";
+import { colors, fontMap, icons } from "@/constants";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef } from "react";

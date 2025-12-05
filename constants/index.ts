@@ -55,23 +55,6 @@ const loginProvider = {
 
 type LoginProvider = (typeof loginProvider)[keyof typeof loginProvider] | null;
 
-type Stores = "gs25" | "cu" | "7eleven" | "emart24";
-
-const stores: Record<Stores, { name: string }> = {
-  gs25: {
-    name: "GS25",
-  },
-  cu: {
-    name: "CU",
-  },
-  "7eleven": {
-    name: "7ELEVEN",
-  },
-  emart24: {
-    name: "emart24",
-  },
-}
-
 export {
   colors,
   fontMap,
@@ -80,6 +63,4 @@ export {
   queryKeys,
   loginProvider,
   LoginProvider,
-  Stores,
-  stores,
 };
