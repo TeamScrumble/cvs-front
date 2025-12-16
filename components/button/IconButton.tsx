@@ -1,26 +1,41 @@
 import { colors } from "@/constants";
-import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React, { Ref } from "react";
+import { Pressable, PressableProps, StyleSheet, View } from "react-native";
 import Icon from "react-native-iconify";
 
-interface IconButtonProps {
+interface IconButtonProps extends PressableProps {
   icon: string;
   color?: string;
   hasDot?: boolean;
   size?: number;
+  ref?: Ref<View>;
   onPress?: () => void;
 }
 
-function IconButton({ icon, color = colors.MAIN_FONT, hasDot = false, size = 24, onPress = () => { } }: IconButtonProps) {
+function IconButton({
+  icon,
+  color = colors.MAIN_FONT,
+  hasDot = false,
+  size = 24,
+  ref,
+  onPress = () => { },
+  ...props
+}: IconButtonProps) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable ref={ref} style={styles.container} onPress={onPress} {...props}>
       <Icon icon={icon} size={size} color={color} />
-      {hasDot && <View style={[styles.dot, { backgroundColor: colors.MAIN }]} />}
+      {hasDot && (
+        <View style={[styles.dot, { backgroundColor: colors.MAIN }]} />
+      )}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    width: "auto",
+    height: "auto",
+  },
   dot: {
     position: "absolute",
     top: 0,
@@ -28,7 +43,7 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-  }
+  },
 });
 
 export default IconButton;

@@ -1,16 +1,37 @@
 // @@iconify-code-gen
 
+import queryClient from "@/api/queryClient";
 import { fontMap } from "@/constants";
+import useAuth from "@/hooks/queries/useAuth";
+import { PortalProvider } from "@gorhom/portal";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
 let isInitialCheckDone = false;
 
 // 스플래시 스크린이 자동으로 숨겨지지 않도록 설정
 SplashScreen.preventAutoHideAsync();
+
+const AuthInitializer = () => {
+  const { reissueMutate } = useAuth();
+
+  useEffect(() => {
+    (async () => {
+      // 앱 실행시 최초 1회 + 로그인이 안 된 상태라면 authScreen으로 보냄
+      if (!isInitialCheckDone) {
+        isInitialCheckDone = true;
+        reissueMutate();
+      }
+    })();
+  }, []);
+
+  return null;
+};
 
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontMap);
@@ -27,37 +48,33 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    // 앱 실행시 최초 1회 + 로그인이 안 된 상태라면
-    if (!isInitialCheckDone) {
-      isInitialCheckDone = true;
-
-      // 로그인 화면으로 이동
-      // setTimeout은 네비게이션 마운트 시점 안전장치
-      setTimeout(() => {
-        router.replace("/auth");
-      }, 0);
-    }
-  }, []);
-
   if (!loaded) return null; // null 혹은 로딩 스피너
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="auth" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="modal"
-        options={{ presentation: "modal", title: "Modal" }}
-      />
-      <Stack.Screen
-        name="store-selection"
-        options={{
-          presentation: "transparentModal",
-          headerShown: false,
-          animation: "fade",
-        }}
-      />
-    </Stack>
+    <QueryClientProvider client={queryClient}>
+      <AuthInitializer />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <PortalProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth" options={{ headerShown: false }} />
+            <Stack.Screen name="product" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="modal"
+              options={{ presentation: "modal", title: "Modal" }}
+            />
+            <Stack.Screen
+              name="store-selection"
+              options={{
+                presentation: "transparentModal",
+                headerShown: false,
+                animation: "fade",
+              }}
+            />
+          </Stack>
+        </PortalProvider>
+      </GestureHandlerRootView>
+    </QueryClientProvider>
   );
 }

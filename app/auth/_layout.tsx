@@ -17,6 +17,13 @@ export default function AuthLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="login"
+        options={{
+          title: "리다이렉트",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

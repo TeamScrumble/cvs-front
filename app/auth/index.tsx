@@ -1,25 +1,38 @@
-import BorderButton from "@/components/button/BorderButton";
-import TextButton from "@/components/button/TextButton";
-import { colors, fonts, LoginProvider, loginProvider } from "@/constants";
-import { router } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { getSecureStore } from "@/utils/secureStore";
-import Tooltip from "@/components/Tooltip";
-import { useEffect, useState } from "react";
+import { LoginProvider } from "@/@types/dto";
 import Character from "@/assets/images/character.svg";
+import GoogleLoginIcon from "@/assets/images/login/google_login_icon.svg";
 import KakaoLoginIcon from "@/assets/images/login/kakao_login_icon.svg";
 import NaverLoginIcon from "@/assets/images/login/naver_login_icon.svg";
-import GoogleLoginIcon from "@/assets/images/login/google_login_icon.svg";
+import BorderButton from "@/components/button/BorderButton";
+import TextButton from "@/components/button/TextButton";
+import Tooltip from "@/components/tooltip/Tooltip";
+import { colors, fonts } from "@/constants";
+import { loginProvider } from "@/constants/login";
+import useAuth from "@/hooks/queries/useAuth";
+import { getSecureStore } from "@/utils/secureStore";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as Linking from "expo-linking";
 
 export default function AuthScreen() {
-  const [lastLogin, setLastLogin] = useState<LoginProvider>(null);
+  const { socialLogin } = useAuth();
+  const [lastLogin, setLastLogin] = useState<LoginProvider | null>(null);
 
   useEffect(() => {
     (async () => {
       const storedLastLogin = await getSecureStore("lastLogin");
-      setLastLogin(storedLastLogin as LoginProvider);
+      setLastLogin(storedLastLogin as LoginProvider | null);
     })();
+  }, []);
+
+  useEffect(() => {
+    const sub = Linking.addEventListener("url", ({ url }) => {
+      console.log("🔗 deep link received:", url);
+    });
+
+    return () => sub.remove();
   }, []);
 
   return (
@@ -27,9 +40,9 @@ export default function AuthScreen() {
       <View style={styles.container}>
         <View style={styles.textButtonContainer}>
           <TextButton
-            title="둘러보기"
+            label="둘러보기"
             fontSize={14}
-            paddingHorizontal={12}
+            pressableStyle={{ paddingHorizontal: 12 }}
             color={colors.GRAY}
             onPress={() => router.push("/(tabs)/home")}
           />
@@ -50,6 +63,7 @@ export default function AuthScreen() {
             <KakaoLoginIcon
               width={54}
               height={54}
+              onPress={() => socialLogin(loginProvider.KAKAO)}
             />
           </View>
           <View style={styles.loginIconItem}>
@@ -59,6 +73,7 @@ export default function AuthScreen() {
             <NaverLoginIcon
               width={54}
               height={54}
+              onPress={() => socialLogin(loginProvider.NAVER)}
             />
           </View>
           <View style={styles.loginIconItem}>
@@ -68,6 +83,7 @@ export default function AuthScreen() {
             <GoogleLoginIcon
               width={54}
               height={54}
+              onPress={() => socialLogin(loginProvider.GOOGLE)}
             />
           </View>
         </View>
@@ -89,12 +105,13 @@ export default function AuthScreen() {
             height={40}
             fontSize={14}
             fontFamily={fonts.SEMI_BOLD}
+            onPress={() => {}}
           />
         </View>
         <View style={styles.helpButtonContainer}>
           <TextButton
-            title="로그인에 어려움이 있으신가요?"
-            paddingHorizontal={12}
+            label="로그인에 어려움이 있으신가요?"
+            pressableStyle={{ paddingHorizontal: 12 }}
             fontSize={12}
             color={colors.GRAY}
           />

@@ -1,13 +1,13 @@
-import { axiosInstance } from "@/api/axios";
+import { https } from "@/api/axios";
 
 function setHeader(key: string, value: string) {
-  axiosInstance.defaults.headers.common[key] = value;
+  https.defaults.headers.common[key] = value;
 }
 
 function removeHeader(key: string) {
-  if (!axiosInstance.defaults.headers.common[key]) return;
+  if (!https.defaults.headers.common[key]) return;
 
-  delete axiosInstance.defaults.headers.common[key];
+  delete https.defaults.headers.common[key];
 }
 
 export { setHeader, removeHeader };

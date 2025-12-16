@@ -5,11 +5,29 @@ const colors = {
   SUB_FONT: "#754D26",
   MAIN_FONT: "#1D2027",
   WHITE: "#FFFFFF",
+  YELLOW: "#FEE500",
+  RED: "#FF0009",
   GRAY: "#999999",
+  GREEN: "#00B505",
+  NEON_GREEN_50: "#E8FFE4",
+  SLATE_TINT_5: "#7176800D",
+  SLATE_TINT_10: "#7176801A",
+  SLATE_50: "#F8F9FB",
   SLATE_200: "#DBDEE3",
-  SLATE_600: "#4B515B", 
-  SLATE_500: "#717580",
+  SLATE_300: "#BCC0C6",
+  SLATE_400: "#9FA3AB",
+  SLATE_500: "#717680",
+  SLATE_600: "#4B515B",
   SLATE_800: "#1D2027",
+  CU_GREEN: "#A5CF4C",
+  CU_PURPLE: "#693B97",
+  GS_ORANGE: "#CC6600",
+  GS_GREEN: "#009999",
+  EMART_YELLOW: "#FFB718",
+  EMART_DARK_GRAY: "#55555A",
+  SEVEN_ELEVEN_GREEN: "#009739",
+  SEVEN_ELEVEN_ORANGE: "#F36F21",
+  NEUTRAL_LIGHT_MEDIUM: "#E8E9F1",
 };
 
 const fontMap = {
@@ -23,6 +41,7 @@ const fontMap = {
 const fonts = {
   CHAB: "chab",
   REGULAR: "regular",
+  MEDIUM: "medium",
   SEMI_BOLD: "semiBold",
   BOLD: "bold",
 } as const;
@@ -42,25 +61,14 @@ const icons = {
   upSquare: "icon-park-outline:up-square",
   chevronRightLine: "material-symbols-light:chevron-right-rounded",
   chevronLeftLine: "material-symbols-light:chevron-left-rounded",
+  share: "fluent:share-ios-20-regular",
+  filledStar: "solar:star-bold",
+  expandLess: "si:expand-less-alt-line",
+  expandMore: "si:expand-more-alt-line",
+  info: "material-symbols-light:info-outline-rounded",
+  receiptOutline: "material-symbols-light:receipt-outline-rounded",
+  thumbsUp: "carbon:thumbs-up",
+  thumbsUpFill: "carbon:thumbs-up-filled"
 };
 
-const queryKeys = {};
-
-const loginProvider = {
-  KAKAO: "kakao",
-  NAVER: "naver",
-  GOOGLE: "google",
-  EMAIL: "email",
-} as const;
-
-type LoginProvider = (typeof loginProvider)[keyof typeof loginProvider] | null;
-
-export {
-  colors,
-  fontMap,
-  fonts,
-  icons,
-  queryKeys,
-  loginProvider,
-  LoginProvider,
-};
+export { colors, fontMap, fonts, icons };

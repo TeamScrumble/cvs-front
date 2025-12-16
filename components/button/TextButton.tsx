@@ -1,42 +1,44 @@
 import { FontFamilyType } from "@/@types";
 import { colors, fonts } from "@/constants";
 import React from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  Text,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 
-interface TextButtonProps {
-  title: string;
+interface TextButtonProps extends PressableProps {
+  label: string;
   fontSize?: number;
   fontFamily?: FontFamilyType;
   color?: string;
-  paddingHorizontal?: number;
+  pressableStyle?: StyleProp<ViewStyle>
+  textStyle?: TextStyle;
   onPress?: () => void;
 }
 
 function TextButton({
-  title,
+  label,
   fontSize = 16,
   fontFamily = fonts.REGULAR,
   color = colors.SLATE_800,
-  paddingHorizontal = 0,
+  pressableStyle,
+  textStyle,
   onPress = () => {},
+  ...props
 }: TextButtonProps) {
   return (
     <Pressable
-      style={[styles.textContainer, { paddingHorizontal }]}
+      style={pressableStyle}
       onPress={onPress}
+      {...props}
     >
-      <Text style={[styles.text, { color, fontFamily, fontSize }]}>
-        {title}
-      </Text>
+      <Text style={[{ color, fontFamily, fontSize }, textStyle]}>{label}</Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  textContainer: {
-    paddingVertical: 10,
-  },
-  text: {},
-});
 
 export default TextButton;

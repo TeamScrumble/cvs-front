@@ -1,26 +1,29 @@
-import { stores, Stores } from "@/@types";
+import { brands, BrandType } from "@/@types/brand";
 import Seven_Icon from "@/assets/images/stores/7eleven_icon.svg";
 import CU_Icon from "@/assets/images/stores/cu_icon.svg";
 import Emart24_Icon from "@/assets/images/stores/emart24_icon.svg";
 import GS25_Icon from "@/assets/images/stores/gs25_icon.svg";
 import { colors, fontMap, icons } from "@/constants";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Iconify } from "react-native-iconify";
 
-const storeIcon: Record<Stores, () => React.ReactNode> = {
-  gs25: () => <GS25_Icon width={16} height={16} />,
-  cu: () => <CU_Icon width={16} height={16} />,
-  "7eleven": () => <Seven_Icon width={16} height={16} />,
-  emart24: () => <Emart24_Icon width={16} height={16} />,
+const brandIcon: Record<BrandType, () => React.ReactNode> = {
+  GS25: () => <GS25_Icon width={16} height={16} />,
+  CU: () => <CU_Icon width={16} height={16} />,
+  SEVEN_ELEVEN: () => <Seven_Icon width={16} height={16} />,
+  EMART24: () => <Emart24_Icon width={16} height={16} />,
 };
 
 export default function StoreSelectionScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => [254], []);
+  const snapPoints = useMemo(() => [300], []);
 
   useEffect(() => {
     // 스크린이 마운트될 떄, 바텀시트를 펼침.
@@ -49,7 +52,7 @@ export default function StoreSelectionScreen() {
   const handlePressStore = (storeName: string) => {
     // 바텀시트가 열린 화면을 별도의 스크린으로 처리했기 때문에
     // router.push가 아닌 replace를 사용
-    router.replace(`/home/${storeName}`);
+    router.replace(`/(tabs)/home/${storeName}`);
   };
 
   return (
@@ -64,17 +67,25 @@ export default function StoreSelectionScreen() {
         handleIndicatorStyle={{ backgroundColor: colors.GRAY }}
       >
         <BottomSheetView style={styles.contentContainer}>
-          {Object.entries(stores).map(([key, store], index) => (
+          {Object.entries(brands).map(([key, brand], index) => (
             <TouchableOpacity
               key={index}
               style={styles.itemContainer}
               onPress={() => handlePressStore(key)}
             >
               <View style={styles.leftContainer}>
-                {storeIcon[key as Stores]()}
-                <Text style={[styles.storeName, { fontFamily: fontMap.medium }]}>{store.name}</Text>
+                {brandIcon[key as BrandType]()}
+                <Text
+                  style={[styles.storeName, { fontFamily: fontMap.medium }]}
+                >
+                  {brand.name}
+                </Text>
               </View>
-              <Iconify icon={icons.chevronRightLine} size={20} color={colors.MAIN_FONT} />
+              <Iconify
+                icon={icons.chevronRightLine}
+                size={20}
+                color={colors.MAIN_FONT}
+              />
             </TouchableOpacity>
           ))}
         </BottomSheetView>

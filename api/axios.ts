@@ -2,12 +2,17 @@ import axios from "axios";
 import { Platform } from "react-native";
 
 const baseUrls = {
-  android: "http://localhost:3030",
-  ios: "http://localhost:3030",
-} 
+  android: process.env.EXPO_PUBLIC_API_URL,
+  ios: process.env.EXPO_PUBLIC_API_URL,
+}
 
-const axiosInstance = axios.create({
-  baseURL: Platform.OS === "ios" ? baseUrls.ios : baseUrls.android,
+const BASE_URL = Platform.OS === "ios" ? baseUrls.ios : baseUrls.android;
+
+const https = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json"
+  }
 });
 
-export { baseUrls, axiosInstance };
+export { BASE_URL, https };

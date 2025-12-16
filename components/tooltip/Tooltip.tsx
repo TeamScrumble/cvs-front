@@ -1,25 +1,29 @@
+import { colors } from "@/constants";
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable, PressableProps } from "react-native";
 
-interface TooltipProps {
+interface TooltipProps extends PressableProps {
   content: string;
+  onPress?: () => void;
 }
 
-function Tooltip({ content }: TooltipProps) {
+function Tooltip({ content, onPress = () => {}, ...props }: TooltipProps) {
   const [tooltipHeight, setTooltipHeight] = useState(0);
 
   return (
-    <View
+    <Pressable
       style={[styles.wrapper, { top: -(tooltipHeight + 4) }]}
       onLayout={(e) => {
         setTooltipHeight(e.nativeEvent.layout.height);
       }}
+      onPress={onPress}
+      {...props}
     >
       <View style={styles.container}>
         <Text style={styles.text}>{content}</Text>
       </View>
       <View style={styles.triangle} />
-    </View>
+    </Pressable>
   );
 }
 
@@ -30,13 +34,13 @@ const styles = StyleSheet.create({
     minWidth: 100,
   },
   container: {
-    backgroundColor: "#2C2C2C",
+    backgroundColor: colors.SLATE_800,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   text: {
-    color: "#FFF",
+    color: colors.WHITE,
     fontSize: 12,
   },
   triangle: {
@@ -47,7 +51,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 8,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderTopColor: "#2C2C2C",
+    borderTopColor: colors.SLATE_800,
   },
 });
 

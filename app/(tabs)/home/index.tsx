@@ -1,3 +1,4 @@
+import BorderButton from "@/components/button/BorderButton";
 import IconButton from "@/components/button/IconButton";
 import { colors, fonts, icons } from "@/constants";
 import { router } from "expo-router";
@@ -27,6 +28,15 @@ export default function HomeScreen() {
             <IconButton icon={icons.search} />
             <IconButton icon={icons.alert} hasDot />
           </View>
+        </View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <BorderButton
+            title="상세화면으로 이동"
+            height={24}
+            onPress={() => router.push("/product/3")}
+          />
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
