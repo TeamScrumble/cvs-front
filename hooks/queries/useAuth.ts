@@ -12,12 +12,9 @@ import {
   saveSecureStore,
 } from "@/utils/secureStore";
 import { useMutation } from "@tanstack/react-query";
-import * as Linking from "expo-linking";
+import { openURL } from "expo-linking";
 import { router } from "expo-router";
-import { openAuthSessionAsync } from "expo-web-browser";
 import { useState } from "react";
-
-const REDIRECT_URL = Linking.createURL("auth/login/redirect");
 
 const useReissue = () => {
   return useMutation({
@@ -49,11 +46,13 @@ const useExchange = () => {
       await saveSecureStore(tokenKeys.REFRESH, refreshToken);
       await saveSecureStore("lastLogin", provider);
       queryClient.fetchQuery({
-        queryKey: [queryKeys.auth, queryKeys.exchange],
+        queryKey: [queryKeys.auth],
       });
       router.replace("/home");
     },
-    onError: () => {},
+    onError: () => {
+      console.log("여기?");
+    },
   });
 };
 
@@ -75,7 +74,6 @@ const useAuth = () => {
   const reissueMutation = useReissue();
   const exchangeMutation = useExchange();
   const logoutMutation = useLogout();
-  const [provider, setProvider] = useState<LoginProvider | null>(null);
 
   const reissueMutate = async () => {
     const storedRefreshToken = (await getSecureStore(tokenKeys.REFRESH)) as
@@ -88,16 +86,12 @@ const useAuth = () => {
   };
 
   const socialLogin = async (provider: LoginProvider) => {
-    setProvider(provider);
+    saveSecureStore("lastTriedLoginProvider", provider)
     const AUTH_URL = `${BASE_URL}/oauth2/authorization/${provider}`;
-    console.log("redirect_url : ", REDIRECT_URL);
-    const result = await openAuthSessionAsync(AUTH_URL, REDIRECT_URL);
-
-    console.log(`${provider}Login => result.type: `, result.type);
+    openURL(AUTH_URL);
   };
 
   return {
-    provider,
     socialLogin,
     exchangeMutation,
     logoutMutation,

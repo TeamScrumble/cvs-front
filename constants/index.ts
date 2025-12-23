@@ -8,6 +8,8 @@ const colors = {
   YELLOW: "#FEE500",
   RED: "#FF0009",
   GRAY: "#999999",
+  GRAY_50: "#F8F9FA",
+  GRAY_50_TINT: "#F5F6F8",
   GREEN: "#00B505",
   NEON_GREEN_50: "#E8FFE4",
   SLATE_TINT_5: "#7176800D",
@@ -18,6 +20,7 @@ const colors = {
   SLATE_400: "#9FA3AB",
   SLATE_500: "#717680",
   SLATE_600: "#4B515B",
+  SLATE_700: "#24282F",
   SLATE_800: "#1D2027",
   CU_GREEN: "#A5CF4C",
   CU_PURPLE: "#693B97",
@@ -28,6 +31,9 @@ const colors = {
   SEVEN_ELEVEN_GREEN: "#009739",
   SEVEN_ELEVEN_ORANGE: "#F36F21",
   NEUTRAL_LIGHT_MEDIUM: "#E8E9F1",
+  ERROR_BG: "#FFF5F5",
+  ERROR_BORDER: "#E57373",
+  ERROR_TEXT: "#D32F2F",
 };
 
 const fontMap = {
@@ -68,7 +74,9 @@ const icons = {
   info: "material-symbols-light:info-outline-rounded",
   receiptOutline: "material-symbols-light:receipt-outline-rounded",
   thumbsUp: "carbon:thumbs-up",
-  thumbsUpFill: "carbon:thumbs-up-filled"
+  thumbsUpFill: "carbon:thumbs-up-filled",
+  addRounded: "material-symbols-light:add-rounded",
+  xCircleFill: "ph:x-circle-fill",
 };
 
 export { colors, fontMap, fonts, icons };

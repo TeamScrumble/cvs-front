@@ -1,8 +1,5 @@
 import { brands, BrandType } from "@/@types/brand";
-import Seven_Icon from "@/assets/images/stores/7eleven_icon.svg";
-import CU_Icon from "@/assets/images/stores/cu_icon.svg";
-import Emart24_Icon from "@/assets/images/stores/emart24_icon.svg";
-import GS25_Icon from "@/assets/images/stores/gs25_icon.svg";
+import BrandIcon from "@/components/domain/BrandIcon";
 import { colors, fontMap, icons } from "@/constants";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -13,13 +10,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Iconify } from "react-native-iconify";
-
-const brandIcon: Record<BrandType, () => React.ReactNode> = {
-  GS25: () => <GS25_Icon width={16} height={16} />,
-  CU: () => <CU_Icon width={16} height={16} />,
-  SEVEN_ELEVEN: () => <Seven_Icon width={16} height={16} />,
-  EMART24: () => <Emart24_Icon width={16} height={16} />,
-};
 
 export default function StoreSelectionScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -74,7 +64,7 @@ export default function StoreSelectionScreen() {
               onPress={() => handlePressStore(key)}
             >
               <View style={styles.leftContainer}>
-                {brandIcon[key as BrandType]()}
+                <BrandIcon brandType={key as BrandType}/>
                 <Text
                   style={[styles.storeName, { fontFamily: fontMap.medium }]}
                 >

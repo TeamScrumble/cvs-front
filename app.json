@@ -21,7 +21,8 @@
       },
       "package": "dev.expo.pyunpyun.app",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "adjustResize"
     },
     "web": {
       "output": "static",

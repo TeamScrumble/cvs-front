@@ -1,6 +1,7 @@
 import IconButton from "@/components/button/IconButton";
 import TextButton from "@/components/button/TextButton";
 import { colors, fonts, icons } from "@/constants";
+import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -27,7 +28,7 @@ function BottomBar({ isLike, totalLikes, onPressLike }: BottomBarProps) {
         pressableStyle={styles.buttonContainer}
         textStyle={styles.buttonText}
         onPress={() => {
-          /* 후기 작성하기 화면으로 이동 */
+          router.push("/product/review/write");
         }}
       />
     </View>

@@ -17,7 +17,6 @@ interface TextButtonProps extends PressableProps {
   color?: string;
   pressableStyle?: StyleProp<ViewStyle>
   textStyle?: TextStyle;
-  onPress?: () => void;
 }
 
 function TextButton({
@@ -27,13 +26,11 @@ function TextButton({
   color = colors.SLATE_800,
   pressableStyle,
   textStyle,
-  onPress = () => {},
   ...props
 }: TextButtonProps) {
   return (
     <Pressable
       style={pressableStyle}
-      onPress={onPress}
       {...props}
     >
       <Text style={[{ color, fontFamily, fontSize }, textStyle]}>{label}</Text>

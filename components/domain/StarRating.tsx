@@ -1,23 +1,27 @@
+import IconButton from "@/components/button/IconButton";
 import { colors, icons } from "@/constants";
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import Icon from "react-native-iconify";
 
 interface StarRatingProps {
   rating: number;
+  gap?: number;
+  size?: number;
+  onPress?: (index: number) => void;
 }
 
-function StarRating({ rating }: StarRatingProps) {
+function StarRating({ rating, gap = 2, size = 14, onPress = () => {} }: StarRatingProps) {
   const numberOfStars = useMemo(() => Math.ceil(rating), [rating]);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { gap }]}>
       {Array.from({ length: 5 }, (_, i) => i < numberOfStars).map((v, i) => {
         return (
-          <Icon
+          <IconButton
             key={`StarIcon_${i}`}
             icon={icons.filledStar}
-            size={14}
+            size={size}
             color={v ? colors.YELLOW : colors.SLATE_200}
+            onPress={() => onPress(i + 1)}
           />
         );
       })}
@@ -28,7 +32,6 @@ function StarRating({ rating }: StarRatingProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    gap: 2,
   },
 });
 

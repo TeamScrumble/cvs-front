@@ -1,6 +1,5 @@
 const queryKeys = {
-  auth: "auth",
-  exchange: "exchange"
+  auth: "auth"
 };
 
 export { queryKeys }

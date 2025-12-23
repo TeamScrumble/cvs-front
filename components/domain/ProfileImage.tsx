@@ -1,7 +1,6 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import EmptyProfileImage from "@/assets/images/empty_profile.svg";
-import { colors } from "@/constants";
 
 interface ProfileImageProps {
   profileUrl: string;

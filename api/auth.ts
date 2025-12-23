@@ -17,6 +17,8 @@ const exchange = async (params: {
     { ticket: params.ticket }
   );
 
+  console.log("exchange.data: ", data);
+
   return { ...data.body, provider: params.provider };
 };
 
