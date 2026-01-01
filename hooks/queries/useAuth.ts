@@ -60,8 +60,8 @@ const useLogout = () => {
         console.log(
           "[useLogout] onSuccess: removeHeader and deleteSecureStore"
         );
-        console.log("[useLogout] onSuccess: resetQueries -> [queryKeys.AUTH]");
-        queryClient.resetQueries({ queryKey: [queryKeys.AUTH] });
+        console.log("[useLogout] onSuccess: queryClient clear!");
+        queryClient.clear();
       }
     },
     onError: async () => {
