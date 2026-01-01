@@ -1,3 +1,4 @@
+import CustomButton from "@/components/button/CustomButton";
 import { colors, fonts } from "@/constants";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -9,7 +10,7 @@ const ReviewContentText = ({ text }: { text: string }) => {
   const [isTruncated, setIsTruncated] = useState(false);
 
   return (
-    <View>
+    <View style={{ position: "relative" }}>
       {/* 전체 텍스트 측정용 (화면에는 안 보임) */}
       <Text
         style={[styles.text, { position: "absolute", opacity: 0 }]}
@@ -28,12 +29,16 @@ const ReviewContentText = ({ text }: { text: string }) => {
       </Text>
 
       {!expanded && isTruncated && (
-        <Text
-          onPress={() => setExpanded(true)}
-          style={[styles.text, { color: colors.SLATE_500, textDecorationLine: "underline", alignSelf: "flex-end" }]}
-        >
-          더보기
-        </Text>
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            label="더보기"
+            variant="underline"
+            fontFamily={fonts.REGULAR}
+            lineHeight={1.5}
+            letterSpacing={0.28}
+            onPress={() => setExpanded(true)}
+          />
+        </View>
       )}
     </View>
   );
@@ -46,6 +51,9 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     letterSpacing: 0.28,
   },
+  buttonContainer: {
+    alignItems: "flex-end",
+  }
 });
 
 export default ReviewContentText;
