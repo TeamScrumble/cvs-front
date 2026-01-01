@@ -1,27 +1,32 @@
-import TextButton from "@/components/button/TextButton";
 import { colors, fonts } from "@/constants";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import StarRating from "../StarRating";
 import ProfileImage from "../ProfileImage";
 import ReceiptBadge from "./ReceiptBadge";
+import { router, useLocalSearchParams } from "expo-router";
+import CustomButton from "@/components/button/CustomButton";
 
 interface ReviewHeaderProps {
+  reviewId: number;
   nickname: string;
   profileUrl: string;
   rating: number;
-  createdDate: string; // todo: dateTime ?,
+  createdDate: string; // todo: dateTime
   hasReceipt: boolean;
 }
 
 function ReviewHeader({
+  reviewId,
   nickname,
   profileUrl,
   rating,
   createdDate,
   hasReceipt,
 }: ReviewHeaderProps) {
-  const handleReportPress = () => {};
+  const { productId } = useLocalSearchParams();
+  const handleReportPress = () =>
+    router.push(`/product/${productId}/review/${reviewId}/report`);
 
   return (
     <View style={styles.container}>
@@ -36,10 +41,14 @@ function ReviewHeader({
           <View style={styles.textWrapper}>
             <Text style={styles.text}>{createdDate}</Text>
             <View style={styles.verticalDivdier} />
-            <TextButton
+            <CustomButton
               label="신고"
+              variant="standard"
+              fontFamily={fonts.REGULAR}
+              fontSize={12}
+              letterSpacing={0}
+              color={colors.SLATE_500}
               onPress={handleReportPress}
-              textStyle={styles.text}
             />
           </View>
         </View>

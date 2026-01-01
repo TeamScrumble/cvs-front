@@ -1,10 +1,14 @@
-import TextButton from "@/components/button/TextButton";
+import CustomButton from "@/components/button/CustomButton";
 import ProductSummary from "@/components/domain/review/write/ProductSummary";
 import Radio from "@/components/radio/Radio";
 import TextArea from "@/components/textArea/TextArea";
 import UploadImage from "@/components/UploadImage";
 import { colors, fonts } from "@/constants";
-import { isBlank, maxLength, minLength } from "@/rules";
+import useCreateReview from "@/hooks/queries/review/useCreateReview";
+import useGetReviewAspectInfo from "@/hooks/queries/review/useGetReviewAspectInfo";
+import { maxLength, minLength } from "@/rules";
+import { toPositiveInt } from "@/utils";
+import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
@@ -13,30 +17,47 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormValues = {
   rating: number;
-  quality: string;
-  cost: string;
-  repurchase: string;
-  review: string;
+  aspects: number[];
+  content: string;
   imageUris: string[];
+  hasReceipt: boolean;
 };
 
 function ReviewWriteScreen() {
+  const { productId } = useLocalSearchParams<{ productId: string }>();
+  const productIdNum = toPositiveInt(productId);
+  const { data: aspectInfo } = useGetReviewAspectInfo();
+  const createReviewMutation = useCreateReview(productIdNum);
+
   const reviewForm = useForm<FormValues>({
     defaultValues: {
-      rating: 5,
-      quality: "",
-      cost: "",
-      repurchase: "",
-      review: "",
-      imageUris: ["https://m.cookieall.com/web/product/medium/202312/f3c1ceed50876e02d43c117c420bc159.jpg"],
+      rating: 0,
+      aspects: Array(aspectInfo?.length).fill(0),
+      content: "",
+      imageUris: [
+        "https://m.cookieall.com/web/product/medium/202312/f3c1ceed50876e02d43c117c420bc159.jpg",
+      ],
+      hasReceipt: false,
     },
   });
 
-  const handlePressStar = (value: number) =>
-    reviewForm.setValue("rating", value);
-
   const onSubmit = (formValues: FormValues) => {
-    console.log("formValues:", formValues);
+    if (!aspectInfo) return;
+
+    createReviewMutation.mutate({
+      productId: productIdNum,
+      rating: formValues.rating,
+      content: formValues.content,
+      scores: formValues.aspects.map((v, i) => ({
+        aspectId: aspectInfo[i].aspectId,
+        optionId: v,
+      })),
+      isReceipt: formValues.hasReceipt,
+      images: formValues.imageUris.map((v, i) => ({
+        imgUrl: v,
+        displayOrder: i + 1,
+      })),
+    });
   };
 
   return (
@@ -49,62 +70,33 @@ function ReviewWriteScreen() {
           keyboardShouldPersistTaps="handled"
         >
           {/* 상품 요약 정보 및 별점 평가 */}
-          <ProductSummary
-            brandType="CU"
-            productName="오리온)눈을감자칠리치즈"
-            rating={reviewForm.watch().rating}
-            handlePressStar={handlePressStar}
-          />
+          <ProductSummary productId={productIdNum} />
           {/* 구분선 */}
           <View style={{ backgroundColor: colors.GRAY_50_TINT, height: 8 }} />
           {/* 객관식 평가 */}
-          <Radio
-            name="quality"
-            label="품질이 어떠셨나요?"
-            options={[
-              { label: "최고예요", value: "최고예요" },
-              { label: "괜찮아요", value: "괜찮아요" },
-              { label: "별로예요", value: "별로예요" },
-            ]}
-            rules={{
-              validate: (data: string) => {
-                if (isBlank(data)) return "blank error";
-              },
-            }}
-          />
-          <Radio
-            name="cost"
-            label="가격이 어떠셨나요?"
-            options={[
-              { label: "최고예요", value: "최고예요" },
-              { label: "그냥 그래요", value: "그냥 그래요" },
-              { label: "별로예요", value: "별로예요" },
-            ]}
-            rules={{
-              validate: (data: string) => {
-                if (isBlank(data)) return "blank error";
-              },
-            }}
-          />
-          <Radio
-            name="repurchase"
-            label="재구매의사가 있으신가요?"
-            options={[
-              { label: "완전 있어요", value: "완전 있어요" },
-              { label: "모르겠어요", value: "모르겠어요" },
-              { label: "전혀 없어요", value: "전혀 없어요" },
-            ]}
-            rules={{
-              validate: (data: string) => {
-                if (isBlank(data)) return "blank error";
-              },
-            }}
-          />
+          {aspectInfo?.map((v, i) => {
+            return (
+              <Radio
+                key={v.aspectId}
+                name={`aspects.${i}`}
+                label={v.aspectQuestion}
+                options={v.options.map((op) => ({
+                  label: op.optionText,
+                  value: op.optionId,
+                }))}
+                rules={{
+                  validate: (data: number) => {
+                    if (data < 1) return "blank error";
+                  },
+                }}
+              />
+            );
+          })}
           {/* 후기 작성 */}
           <View style={{ gap: 20, padding: 20 }}>
             <Text style={styles.labelText}>어떤 점이 좋았나요?</Text>
             <TextArea
-              name="review"
+              name="content"
               placeholder="10~500자의 상품 후기를 작성해주세요."
               rules={{
                 validate: (data: string) => {
@@ -129,10 +121,8 @@ function ReviewWriteScreen() {
           </View>
         </KeyboardAwareScrollView>
         <View style={styles.footerContainer}>
-          <TextButton
+          <CustomButton
             label="후기 등록"
-            pressableStyle={styles.footerButton}
-            textStyle={styles.footerButtonText}
             onPress={reviewForm.handleSubmit(onSubmit)}
           />
         </View>

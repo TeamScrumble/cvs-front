@@ -1,4 +1,4 @@
-import BorderButton from "@/components/button/BorderButton";
+import CustomButton from "@/components/button/CustomButton";
 import IconButton from "@/components/button/IconButton";
 import { colors, fonts, icons } from "@/constants";
 import { router } from "expo-router";
@@ -22,6 +22,7 @@ export default function HomeScreen() {
               size={14}
               color={colors.SUB_FONT}
               onPress={handleOpenBottomSheet}
+              style={{ padding: 6 }}
             />
           </View>
           <View style={styles.iconContainer}>
@@ -32,9 +33,8 @@ export default function HomeScreen() {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <BorderButton
-            title="상세화면으로 이동"
-            height={24}
+          <CustomButton
+            label="상세화면으로 이동"
             onPress={() => router.push("/product/3")}
           />
         </View>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 2,
   },
   iconContainer: {
     flexDirection: "row",

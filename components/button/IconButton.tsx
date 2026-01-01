@@ -9,7 +9,6 @@ interface IconButtonProps extends PressableProps {
   hasDot?: boolean;
   size?: number;
   ref?: Ref<View>;
-  onPress?: () => void;
 }
 
 function IconButton({
@@ -18,11 +17,10 @@ function IconButton({
   hasDot = false,
   size = 24,
   ref,
-  onPress = () => { },
   ...props
 }: IconButtonProps) {
   return (
-    <Pressable ref={ref} style={styles.container} onPress={onPress} {...props}>
+    <Pressable ref={ref} style={styles.container} {...props}>
       <Icon icon={icon} size={size} color={color} />
       {hasDot && (
         <View style={[styles.dot, { backgroundColor: colors.MAIN }]} />

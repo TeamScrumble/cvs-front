@@ -12,6 +12,8 @@ const colors = {
   GRAY_50_TINT: "#F5F6F8",
   GREEN: "#00B505",
   NEON_GREEN_50: "#E8FFE4",
+  NEUTRAL_DARK_LIGHT: "#71727A",
+  NEUTRAL_DARK_DARKEST: "#1F2024",
   SLATE_TINT_5: "#7176800D",
   SLATE_TINT_10: "#7176801A",
   SLATE_50: "#F8F9FB",
@@ -77,6 +79,8 @@ const icons = {
   thumbsUpFill: "carbon:thumbs-up-filled",
   addRounded: "material-symbols-light:add-rounded",
   xCircleFill: "ph:x-circle-fill",
+  checkCircle: "material-symbols-light:check-circle-rounded",
+  circleOutline: "material-symbols-light:circle-outline",
 };
 
 export { colors, fontMap, fonts, icons };

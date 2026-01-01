@@ -3,21 +3,19 @@ import Character from "@/assets/images/character.svg";
 import GoogleLoginIcon from "@/assets/images/login/google_login_icon.svg";
 import KakaoLoginIcon from "@/assets/images/login/kakao_login_icon.svg";
 import NaverLoginIcon from "@/assets/images/login/naver_login_icon.svg";
-import BorderButton from "@/components/button/BorderButton";
-import TextButton from "@/components/button/TextButton";
+import CustomButton from "@/components/button/CustomButton";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { colors, fonts } from "@/constants";
 import { loginProvider } from "@/constants/login";
-import useAuth from "@/hooks/queries/useAuth";
+import { useAuthAction } from "@/hooks/queries/useAuth";
 import { getSecureStore } from "@/utils/secureStore";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Linking from "expo-linking";
 
 export default function AuthScreen() {
-  const { socialLogin } = useAuth();
+  const { socialLogin } = useAuthAction();
   const [lastLogin, setLastLogin] = useState<LoginProvider | null>(null);
 
   useEffect(() => {
@@ -27,111 +25,110 @@ export default function AuthScreen() {
     })();
   }, []);
 
-  useEffect(() => {
-    const sub = Linking.addEventListener("url", ({ url }) => {
-      console.log("🔗 deep link received:", url);
-    });
-
-    return () => sub.remove();
-  }, []);
-
   return (
-    <SafeAreaView style={styles.safeAreaContainer}>
-      <View style={styles.container}>
-        <View style={styles.textButtonContainer}>
-          <TextButton
-            label="둘러보기"
-            fontSize={14}
-            pressableStyle={{ paddingHorizontal: 12 }}
-            color={colors.GRAY}
-            onPress={() => router.push("/(tabs)/home")}
-          />
-        </View>
-        <View style={styles.logoContainer}>
-          <Character width={66} height={64} />
-          <Text
-            style={{ fontFamily: "chab", color: colors.MAIN, fontSize: 40 }}
-          >
-            편:편
-          </Text>
-        </View>
-        <View style={styles.loginIconContainer}>
-          <View style={styles.loginIconItem}>
-            {lastLogin === loginProvider.KAKAO && (
-              <Tooltip content="최근 로그인" />
-            )}
-            <KakaoLoginIcon
-              width={54}
-              height={54}
-              onPress={() => socialLogin(loginProvider.KAKAO)}
-            />
-          </View>
-          <View style={styles.loginIconItem}>
-            {lastLogin === loginProvider.NAVER && (
-              <Tooltip content="최근 로그인" />
-            )}
-            <NaverLoginIcon
-              width={54}
-              height={54}
-              onPress={() => socialLogin(loginProvider.NAVER)}
-            />
-          </View>
-          <View style={styles.loginIconItem}>
-            {lastLogin === loginProvider.GOOGLE && (
-              <Tooltip content="최근 로그인" />
-            )}
-            <GoogleLoginIcon
-              width={54}
-              height={54}
-              onPress={() => socialLogin(loginProvider.GOOGLE)}
-            />
-          </View>
-        </View>
-        <View style={styles.textContainer}>
-          <View style={styles.line} />
-          <Text
-            style={{ fontFamily: "regular", color: colors.GRAY, fontSize: 12 }}
-          >
-            또는
-          </Text>
-          <View style={styles.line} />
-        </View>
-        <View style={[styles.roundButtonContainer, styles.loginIconItem]}>
-          {lastLogin === loginProvider.EMAIL && (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          label="둘러보기"
+          variant="standard"
+          fontFamily={fonts.REGULAR}
+          color={colors.GRAY}
+          containerStyle={{
+            paddingVertical: 12,
+            paddingHorizontal: 10,
+          }}
+          onPress={() => router.push("/home")}
+        />
+      </View>
+      <View style={styles.logoContainer}>
+        <Character width={66} height={64} />
+        <Text style={{ fontFamily: "chab", color: colors.MAIN, fontSize: 40 }}>
+          편:편
+        </Text>
+      </View>
+      <View style={styles.loginIconContainer}>
+        <View style={styles.loginIconItem}>
+          {lastLogin === loginProvider.KAKAO && (
             <Tooltip content="최근 로그인" />
           )}
-          <BorderButton
-            title="이메일로 로그인"
-            height={40}
-            fontSize={14}
-            fontFamily={fonts.SEMI_BOLD}
-            onPress={() => {}}
+          <KakaoLoginIcon
+            width={54}
+            height={54}
+            onPress={() => socialLogin(loginProvider.KAKAO)}
           />
         </View>
-        <View style={styles.helpButtonContainer}>
-          <TextButton
-            label="로그인에 어려움이 있으신가요?"
-            pressableStyle={{ paddingHorizontal: 12 }}
-            fontSize={12}
-            color={colors.GRAY}
+        <View style={styles.loginIconItem}>
+          {lastLogin === loginProvider.NAVER && (
+            <Tooltip content="최근 로그인" />
+          )}
+          <NaverLoginIcon
+            width={54}
+            height={54}
+            onPress={() => socialLogin(loginProvider.NAVER)}
           />
         </View>
+        <View style={styles.loginIconItem}>
+          {lastLogin === loginProvider.GOOGLE && (
+            <Tooltip content="최근 로그인" />
+          )}
+          <GoogleLoginIcon
+            width={54}
+            height={54}
+            onPress={() => socialLogin(loginProvider.GOOGLE)}
+          />
+        </View>
+      </View>
+      <View style={styles.textContainer}>
+        <View style={styles.line} />
+        <Text
+          style={{ fontFamily: "regular", color: colors.GRAY, fontSize: 12 }}
+        >
+          또는
+        </Text>
+        <View style={styles.line} />
+      </View>
+      <View style={styles.roundButtonContainer}>
+        {lastLogin === loginProvider.EMAIL && <Tooltip content="최근 로그인" />}
+        <CustomButton
+          label="이메일로 로그인"
+          variant="border"
+          color={colors.SLATE_800}
+          bgColor={colors.WHITE}
+          bdColor={colors.SLATE_200}
+          containerStyle={{
+            width: "100%",
+            borderRadius: 100,
+          }}
+          onPress={() => {}}
+        />
+      </View>
+      <View style={styles.helpButtonContainer}>
+        <CustomButton
+          label="로그인에 어려움이 있으신가요?"
+          variant="standard"
+          fontSize={12}
+          fontFamily={fonts.REGULAR}
+          color={colors.GRAY}
+          containerStyle={{
+            paddingVertical: 10,
+            paddingHorizontal: 12,
+          }}
+          onPress={() => {}}
+        />
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeAreaContainer: {
-    flex: 1,
-  },
   container: {
-    backgroundColor: colors.BACKGROUND,
     flex: 1,
+    backgroundColor: colors.BACKGROUND,
   },
-  textButtonContainer: {
+  buttonContainer: {
     marginTop: 16,
-    paddingHorizontal: 12,
+    marginLeft: 12,
+    alignItems: "flex-start",
   },
   logoContainer: {
     marginTop: 58,
@@ -163,10 +160,10 @@ const styles = StyleSheet.create({
   roundButtonContainer: {
     marginTop: 24,
     paddingHorizontal: 24,
+    alignItems: "center",
   },
   helpButtonContainer: {
     marginTop: 25,
     alignItems: "center",
-    paddingVertical: 10,
   },
 });

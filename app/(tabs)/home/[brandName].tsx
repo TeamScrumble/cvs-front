@@ -1,23 +1,32 @@
-import { isBrand } from "@/@types/brand";
+import { BrandType, isBrand } from "@/@types/brand";
 import Header from "@/components/Header";
 import { colors } from "@/constants";
+import useGetProducts from "@/hooks/queries/product/useGetProducts";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BrandScreen() {
-  const { brandName } = useLocalSearchParams<{ brandName: string }>();
+  const params = useLocalSearchParams();
+  const rawBrand = Array.isArray(params.brandName)
+  ? params.brandName[0]
+  : params.brandName;
+  const brand = isBrand(rawBrand) ? rawBrand : undefined;
+  const { data, isLoading } = useGetProducts(brand as BrandType);
 
-  // 유효하지 않은 편의점 이름일 경우 에러화면 렌더링해야함
-  if (!isBrand(brandName)) return null;
+  if (isLoading) {
+    return null; // 로딩 UI
+  }
 
-  const handlePressBackButton = () => router.push("/home");
-
+  if (!brand) {
+    return null; // 에러 화면 가능
+  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        brandType={brandName}
-        handlePressBackButton={handlePressBackButton}
+        brandType={brand}
+        handlePressBackButton={() => router.push("/home")}
       />
     </SafeAreaView>
   );

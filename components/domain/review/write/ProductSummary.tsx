@@ -2,26 +2,26 @@ import { colors, fonts, icons } from "@/constants";
 import React, { useMemo } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import BrandIcon from "../../BrandIcon";
-import { brands, BrandType } from "@/@types/brand";
+import { brands } from "@/@types/brand";
 import StarRating from "../../StarRating";
 import Icon from "react-native-iconify";
 import ReceiptIcon from "@/assets/images/receipt_icon.svg";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
+import useGetProduct from "@/hooks/queries/product/useGetProduct";
 
 interface ProductSummaryProps {
-  brandType: BrandType;
-  productName: string;
-  rating: number;
+  productId: number;
   hasReceipt?: boolean;
-  handlePressStar: (index: number) => void;
 }
 
 function ProductSummary({
-  brandType,
-  productName,
-  rating,
+  productId,
   hasReceipt = false,
-  handlePressStar,
 }: ProductSummaryProps) {
+  const { data } = useGetProduct(productId);
+  const { control } = useFormContext();
+  const rating = useWatch({ control, name: "rating" });
+
   const starText = useMemo(() => {
     return [
       "별점을 입력해주세요",
@@ -33,19 +33,21 @@ function ProductSummary({
     ];
   }, []);
 
+  if (!data) return null;
+
   return (
     <View style={styles.container}>
       {/* 상품 정보 */}
       <View style={{ flexDirection: "row", gap: 12 }}>
         <Image
-          source={require("@/assets/images/snack_image.png")}
+          src={data.product.img}
           width={90}
           height={90}
           style={styles.image}
         />
         <View style={{ gap: 6 }}>
           <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
-            <BrandIcon brandType={brandType} />
+            <BrandIcon brandType={data.product.cvsTarget} />
             <Text
               style={{
                 fontFamily: fonts.MEDIUM,
@@ -54,7 +56,7 @@ function ProductSummary({
                 color: colors.SLATE_600,
               }}
             >
-              {brands[brandType].name}
+              {brands[data.product.cvsTarget].name}
             </Text>
           </View>
           <Text
@@ -65,7 +67,7 @@ function ProductSummary({
               color: colors.SLATE_800,
             }}
           >
-            {productName}
+            {data.product.title}
           </Text>
         </View>
       </View>
@@ -81,22 +83,30 @@ function ProductSummary({
         >
           상품 만족도를 평가해주세요
         </Text>
-        <StarRating
-          rating={rating}
-          size={24}
-          gap={4}
-          onPress={handlePressStar}
-        />
-        <Text
-          style={{
-            fontFamily: fonts.MEDIUM,
-            fontSize: 14,
-            lineHeight: 14,
-            color: colors.SLATE_500,
+        <Controller
+          name={"rating"}
+          control={control}
+          rules={{
+            validate: (rating: number) => {
+              if (rating < 1) return "error";
+            },
           }}
-        >
-          {starText[rating]}
-        </Text>
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <>
+              <StarRating rating={value} size={24} gap={4} onPress={onChange} />
+              <Text
+                style={{
+                  fontFamily: fonts.MEDIUM,
+                  fontSize: 14,
+                  lineHeight: 14,
+                  color: error?.message ? colors.ERROR_TEXT : colors.SLATE_500,
+                }}
+              >
+                {starText[rating]}
+              </Text>
+            </>
+          )}
+        />
       </View>
       {/* 영수증 인증 */}
       {hasReceipt ? (

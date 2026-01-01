@@ -5,9 +5,9 @@ import { colors, fonts } from "@/constants";
 
 type Props = {
   label: string;
-  value?: string;
+  value?: number;
   error?: string;
-  onChange: (v: string) => void;
+  onChange: (v: number) => void;
   options: RadioOption[];
 };
 

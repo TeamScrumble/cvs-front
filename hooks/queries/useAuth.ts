@@ -1,36 +1,26 @@
 import { LoginProvider } from "@/@types/dto";
 import { AuthTokenDTO } from "@/@types/dto/authDto";
-import { exchange, logout, reissue } from "@/api/auth";
+import { exchange, logout } from "@/api/auth";
 import { BASE_URL } from "@/api/axios";
+import { getMe } from "@/api/member";
 import queryClient from "@/api/queryClient";
 import { tokenKeys } from "@/constants/auth";
 import { queryKeys } from "@/constants/queryKey";
-import { removeHeader, setHeader } from "@/utils/header";
-import {
-  deleteSecureStore,
-  getSecureStore,
-  saveSecureStore,
-} from "@/utils/secureStore";
-import { useMutation } from "@tanstack/react-query";
+import { removeHeader } from "@/utils/header";
+import { deleteSecureStore, saveSecureStore } from "@/utils/secureStore";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { openURL } from "expo-linking";
 import { router } from "expo-router";
-import { useState } from "react";
 
-const useReissue = () => {
-  return useMutation({
-    mutationFn: reissue,
-    onSuccess: async ({ accessToken, refreshToken }: AuthTokenDTO) => {
-      console.log("onSuccess accessToken: ", accessToken);
-      console.log("onSuccess refreshToken: ", refreshToken);
-      setHeader("Authorization", `Bearer ${accessToken}`);
-      await saveSecureStore(tokenKeys.ACCESS, accessToken);
-      await saveSecureStore(tokenKeys.REFRESH, refreshToken);
-      queryClient.fetchQuery({ queryKey: [queryKeys.auth] });
-    },
-    onError: () => {
-      router.replace("/auth");
-    },
+const useGetMe = (options?: { enabled?: boolean }) => {
+  const { data, isLoading } = useQuery({
+    queryFn: getMe,
+    queryKey: [queryKeys.AUTH, queryKeys.GET_ME],
+    staleTime: Infinity,
+    enabled: options?.enabled,
   });
+
+  return { data, isLoading };
 };
 
 const useExchange = () => {
@@ -41,17 +31,19 @@ const useExchange = () => {
       refreshToken,
       provider,
     }: AuthTokenDTO & { provider: LoginProvider }) => {
-      setHeader("Authorization", `Bearer ${accessToken}`);
+      console.log("[useExchange] onSuccess: start!");
       await saveSecureStore(tokenKeys.ACCESS, accessToken);
       await saveSecureStore(tokenKeys.REFRESH, refreshToken);
       await saveSecureStore("lastLogin", provider);
-      queryClient.fetchQuery({
-        queryKey: [queryKeys.auth],
+      console.log("[useExchange] onSuccess: invalidateQueries -> getMe");
+      await queryClient.invalidateQueries({
+        queryKey: [queryKeys.AUTH, queryKeys.GET_ME],
       });
+      console.log("[useExchange] onSuccess: replace to /home");
       router.replace("/home");
     },
     onError: () => {
-      console.log("여기?");
+      console.log("[useExchange] onError!");
     },
   });
 };
@@ -59,45 +51,54 @@ const useExchange = () => {
 const useLogout = () => {
   return useMutation({
     mutationFn: logout,
-    onSuccess: async ({ accessToken, refreshToken }: AuthTokenDTO) => {
-      removeHeader("Authorization");
-      await deleteSecureStore(tokenKeys.ACCESS);
-      await deleteSecureStore(tokenKeys.REFRESH);
-      queryClient.fetchQuery({ queryKey: [queryKeys.auth] });
-      router.replace("/auth");
+    onSuccess: async ({ success }: { success: boolean }) => {
+      console.log("[useLogout] onSuccess: start!");
+      if (success) {
+        removeHeader("Authorization");
+        await deleteSecureStore(tokenKeys.ACCESS);
+        await deleteSecureStore(tokenKeys.REFRESH);
+        console.log(
+          "[useLogout] onSuccess: removeHeader and deleteSecureStore"
+        );
+        console.log("[useLogout] onSuccess: resetQueries -> [queryKeys.AUTH]");
+        queryClient.resetQueries({ queryKey: [queryKeys.AUTH] });
+      }
     },
-    onError: () => {},
+    onError: async () => {
+      console.log("[useLogout] onError");
+    },
   });
 };
 
-const useAuth = () => {
-  const reissueMutation = useReissue();
+const useAuthQuery = () => {
+  const { data, isLoading } = useGetMe();
+
+  return {
+    auth: {
+      id: data?.memberId || 0,
+      nickname: data?.nickname || "",
+      email: data?.email || "",
+      profileImage: data?.profileImage || "",
+    },
+    isLoading,
+  }
+}
+
+const useAuthAction = () => {
   const exchangeMutation = useExchange();
   const logoutMutation = useLogout();
 
-  const reissueMutate = async () => {
-    const storedRefreshToken = (await getSecureStore(tokenKeys.REFRESH)) as
-      | string
-      | null;
-    if (storedRefreshToken) {
-      setHeader("X-Refresh-Token", storedRefreshToken);
-    }
-    reissueMutation.mutate();
-  };
-
   const socialLogin = async (provider: LoginProvider) => {
-    saveSecureStore("lastTriedLoginProvider", provider)
+    saveSecureStore("lastTriedLoginProvider", provider);
     const AUTH_URL = `${BASE_URL}/oauth2/authorization/${provider}`;
     openURL(AUTH_URL);
   };
 
   return {
-    socialLogin,
     exchangeMutation,
     logoutMutation,
-    reissueMutate,
-    reissueMutation,
+    socialLogin,
   };
 };
 
-export default useAuth;
+export { useAuthQuery, useAuthAction };

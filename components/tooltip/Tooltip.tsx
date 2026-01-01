@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   triangle: {
+    top: -1,
     width: 0,
     height: 0,
     borderLeftWidth: 6,

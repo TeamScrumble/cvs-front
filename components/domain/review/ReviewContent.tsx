@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import LikeButton from "./LikeButton";
+import ReviewContentText from "./ReviewContentText";
 
 interface ReviewContentProps {
   content: string;
@@ -32,7 +33,8 @@ function ReviewContent({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.contentText}>{content}</Text>
+      {/* <Text style={styles.contentText}>{content}</Text> */}
+      <ReviewContentText text={content} />
       <Pressable
         style={isZoomIn ? styles.zoomInContainer : styles.zoomOutContainer}
         onPress={() => setIsZoomIn((prev) => !prev)}
@@ -67,13 +69,6 @@ function ReviewContent({
 const styles = StyleSheet.create({
   container: {
     gap: 12,
-  },
-  contentText: {
-    fontFamily: fonts.REGULAR,
-    fontSize: 14,
-    lineHeight: 21,
-    letterSpacing: 0.28,
-    color: colors.SLATE_800,
   },
   zoomOutContainer: {
     flexDirection: "row",

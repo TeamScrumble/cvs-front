@@ -1,0 +1,7 @@
+export enum REVIEW_SORT {
+  RECOMMEND,
+  LATEST,
+  RATING_HIGH,
+  RATING_LOW,
+  MOST_HELPFUL
+}

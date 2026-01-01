@@ -1,15 +1,18 @@
 import { colors, fonts, icons } from "@/constants";
+import { router } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-iconify";
 
 interface DetailReviewBarProps {
+  productId: number;
   rating: number; // 별점
   total: number; // 총 후기 갯수
   hasButton?: boolean;
 }
 
 function DetailReviewBar({
+  productId,
   rating,
   total,
   hasButton = false,
@@ -25,7 +28,7 @@ function DetailReviewBar({
         >{`(${total.toLocaleString()})`}</Text>
       </View>
       {hasButton && (
-        <Pressable style={styles.buttonContainer}>
+        <Pressable style={styles.buttonContainer} onPress={() => router.push(`/product/${productId}/review`)}>
           <Text style={styles.buttonLabel}>더보기</Text>
         </Pressable>
       )}

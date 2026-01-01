@@ -18,6 +18,8 @@ module.exports = function (api) {
             "material-symbols-light:info-outline-rounded",
             "material-symbols-light:receipt-outline-rounded",
             "material-symbols-light:add-rounded",
+            "material-symbols-light:check-circle-rounded",
+            "material-symbols-light:circle-outline",
             "carbon:thumbs-up",
             "carbon:thumbs-up-filled",
             "circum:search",

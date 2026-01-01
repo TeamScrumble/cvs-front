@@ -11,13 +11,7 @@ export default function ProductLayout() {
       }}
     >
       <Stack.Screen
-        name="[id]"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="review"
+        name="[productId]"
         options={{
           headerShown: false,
         }}

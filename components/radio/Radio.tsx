@@ -3,7 +3,7 @@ import RadioUI from "./RadioUI";
 
 export type RadioOption = {
   label: string;
-  value: string;
+  value: number;
 };
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   label: string;
   options: RadioOption[];
   rules?: {
-    validate?: (data: string) => string | undefined;
+    validate?: (data: number) => string | undefined;
   };
 };
 

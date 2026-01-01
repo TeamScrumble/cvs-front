@@ -1,29 +1,32 @@
 import { LoginProvider } from "@/@types/dto";
-import useAuth from "@/hooks/queries/useAuth";
 import { getSecureStore } from "@/utils/secureStore";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback } from "react";
+import { useAuthAction } from "@/hooks/queries/useAuth";
 
 function RedirectScreen() {
   const params = useLocalSearchParams();
-  const { exchangeMutation } = useAuth();
+  const { exchangeMutation } = useAuthAction();
 
-  useEffect(() => {
-    (async () => {
-      const ticket = params.ticket as string | undefined;
-      const provider = (await getSecureStore("lastTriedLoginProvider")) as
-        | LoginProvider
-        | undefined;
-      console.log("ticket: ", ticket);
-      console.log("provider: ", provider);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const ticket = params.ticket as string | undefined;
+        const provider = (await getSecureStore("lastTriedLoginProvider")) as
+          | LoginProvider
+          | undefined;
 
-      if (!ticket || !provider) return;
+        console.log("[RedirectScreen] ticket: ", ticket);
+        console.log("[RedirectScreen] provider: ", provider);
 
-      console.log("exchangeMutation start");
+        if (!ticket || !provider) return;
 
-      exchangeMutation.mutate({ ticket, provider });
-    })();
-  }, []);
+        console.log("[RedirectScreen] exchangeMutation start");
+
+        exchangeMutation.mutate({ ticket, provider });
+      })();
+    }, [])
+  );
 
   return null;
 }

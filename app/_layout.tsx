@@ -2,7 +2,6 @@
 
 import queryClient from "@/api/queryClient";
 import { fontMap } from "@/constants";
-import useAuth from "@/hooks/queries/useAuth";
 import { PortalProvider } from "@gorhom/portal";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
@@ -11,27 +10,11 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-
-let isInitialCheckDone = false;
+import { StatusBar } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 
 // 스플래시 스크린이 자동으로 숨겨지지 않도록 설정
 SplashScreen.preventAutoHideAsync();
-
-const AuthInitializer = () => {
-  const { reissueMutate } = useAuth();
-
-  useEffect(() => {
-    (async () => {
-      // 앱 실행시 최초 1회 + 로그인이 안 된 상태라면 authScreen으로 보냄
-      if (!isInitialCheckDone) {
-        isInitialCheckDone = true;
-        reissueMutate();
-      }
-    })();
-  }, []);
-
-  return null;
-};
 
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontMap);
@@ -48,13 +31,19 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  // 안드로이드 하단 네비게이션바
+  useEffect(() => {
+    NavigationBar.setButtonStyleAsync("dark");
+  }, []);
+
   if (!loaded) return null; // null 혹은 로딩 스피너
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthInitializer />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <PortalProvider>
+          {/* 상단 상태바 */}
+          <StatusBar style="dark" />
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

@@ -1,9 +1,10 @@
 import { colors, fonts, icons } from "@/constants";
-import React, { Dispatch, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-iconify";
 import ReviewSummaryStatus from "./ReviewSummaryStatus";
 import ReviewExpandStatus from "./ReviewExpandStatus";
+import useGetReviewSummary from "@/hooks/queries/review/useGetReviewSummary";
 
 const ExpandButton = ({
   isOpen,
@@ -14,10 +15,7 @@ const ExpandButton = ({
 }) => {
   return (
     <View style={styles.detailButtonContainer}>
-      <Pressable
-        style={styles.detailButton}
-        onPress={() => onPress(!isOpen)}
-      >
+      <Pressable style={styles.detailButton} onPress={() => onPress(!isOpen)}>
         <Text style={styles.detailButtonLabel}>
           {isOpen ? "접기" : "자세히 보기"}
         </Text>
@@ -31,52 +29,45 @@ const ExpandButton = ({
   );
 };
 
-interface ReviewStatusProps {}
+interface ReviewStatusProps {
+  productId: number;
+}
 
-function ReviewStatus({}: ReviewStatusProps) {
+function ReviewStatus({ productId }: ReviewStatusProps) {
+  const { data } = useGetReviewSummary(productId);
   const [isOpen, setIsOpen] = useState(false);
 
-  const summaryDummyData = [
-    { label: "품질", state: "매우 좋아요", percent: 80 },
-    { label: "가성비", state: "최고예요", percent: 100 },
-    { label: "재구매의사", state: "완전 있어요", percent: 100 },
-  ];
-  const expandDummyData = [
-    {
-      title: "품질",
-      total: 3470,
-      options: [
-        { label: "매우 좋아요", value: 3430 },
-        { label: "괜찮아요", value: 30 },
-        { label: "별로예요", value: 10 },
-      ],
-    },
-    {
-      title: "가성비",
-      total: 3470,
-      options: [
-        { label: "최고예요", value: 3470 },
-        { label: "그냥 그래요", value: 0 },
-        { label: "매우 좋아요", value: 0 },
-      ],
-    },
-    {
-      title: "재구매의사",
-      total: 3470,
-      options: [
-        { label: "완전 있어요", value: 3615 },
-        { label: "전혀 없어요", value: 100 },
-        { label: "모르겠어요", value: 55 },
-      ],
-    },
-  ];
+  const expandData = useMemo(() => {
+    return (
+      data?.aspects.map((v) => ({
+        title: v.title,
+        total: v.options.reduce((ac, cur) => ac + cur.count, 0),
+        options: v.options.map((op) => ({
+          label: op.optionText,
+          value: op.count,
+        })),
+      })) ?? []
+    );
+  }, [data]);
+
+  const summaryData = useMemo(() => {
+    return (expandData.map((v) => {
+      const maxCount = Math.max(...v.options.map(op => op.value));
+      const maxValue = v.options.find(op => op.value === maxCount);
+      return {
+        label: v.title,
+        state: maxValue?.label ?? "",
+        percent: Math.round((maxValue?.value ?? 0) / v.total * 100)
+      }
+    }))
+  }, [expandData]);
 
   return (
     <View style={styles.container}>
       {isOpen ? (
-        <ReviewExpandStatus reviewExpandList={expandDummyData} />
+        <ReviewExpandStatus reviewExpandList={expandData} />
       ) : (
-        <ReviewSummaryStatus reviewSummaryList={summaryDummyData} />
+        <ReviewSummaryStatus reviewSummaryList={summaryData} />
       )}
       <ExpandButton isOpen={isOpen} onPress={setIsOpen} />
     </View>

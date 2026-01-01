@@ -12,7 +12,7 @@ function ViewAllReviewButton({ totalReviews }: ViewAllReviewButtonProps) {
   return (
     <Pressable
       style={styles.container}
-      onPress={() => router.push("/product/review/2")}
+      onPress={() => router.push("/product/2/review")}
     >
       <Text
         style={styles.text}

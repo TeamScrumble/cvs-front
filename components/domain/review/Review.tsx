@@ -7,6 +7,7 @@ import ReviewHeader from "./ReviewHeader";
 import ReviewStatus from "./ReviewStatus";
 
 interface ReviewProps {
+  reviewId: number;
   nickname: string;
   profileUrl: string;
   rating: number;
@@ -19,6 +20,7 @@ interface ReviewProps {
 }
 
 function Review({
+  reviewId,
   nickname,
   profileUrl,
   rating,
@@ -32,6 +34,7 @@ function Review({
   return (
     <View style={styles.container}>
       <ReviewHeader
+        reviewId={reviewId}
         nickname={nickname}
         profileUrl={profileUrl}
         rating={rating}

@@ -1,9 +1,9 @@
 import { colors, fonts, icons } from "@/constants";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import TextButton from "../button/TextButton";
 import Divider from "../Divider";
 import Icon from "react-native-iconify";
+import CustomButton from "../button/CustomButton";
 
 function Footer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,21 +17,37 @@ function Footer() {
             alignItems: "center",
           }}
         >
-          <TextButton label="고객센터" fontSize={12} textStyle={styles.text} />
-          <Divider isVertical style={{ height: 10 }} />
-          <TextButton label="이용약관" fontSize={12} textStyle={styles.text} />
-          <Divider isVertical style={{ height: 10 }} />
-          <TextButton
-            label="개인정보처리방침"
+          <CustomButton
+            label="고객센터"
+            variant="standard"
             fontSize={12}
-            textStyle={{
-              fontFamily: fonts.BOLD,
-              lineHeight: 12,
-              color: colors.SLATE_800,
-            }}
+            fontFamily={fonts.REGULAR}
+            onPress={() => {}}
+          />
+          <Divider isVertical style={{ height: 10 }} />
+          <CustomButton
+            label="이용약관"
+            variant="standard"
+            fontSize={12}
+            fontFamily={fonts.REGULAR}
+            onPress={() => {}}
+          />
+          <Divider isVertical style={{ height: 10 }} />
+          <CustomButton
+            label="개인정보처리방침"
+            variant="standard"
+            fontSize={12}
+            fontFamily={fonts.BOLD}
+            onPress={() => {}}
           />
         </View>
-        <TextButton label="청소년보호정책" textStyle={styles.text} />
+        <CustomButton
+          label="청소년보호정책"
+          variant="standard"
+          fontSize={12}
+          fontFamily={fonts.REGULAR}
+          onPress={() => {}}
+        />
       </View>
       <View style={{ gap: 20 }}>
         <View style={{ gap: 10 }}>
@@ -55,9 +71,12 @@ function Footer() {
                 <Text style={styles.subText}>
                   사업자등록번호 : 000-00-00000
                 </Text>
-                <TextButton
+                <CustomButton
                   label="사업자정보 확인"
-                  textStyle={styles.underLineText}
+                  variant="underline"
+                  fontSize={10}
+                  fontFamily={fonts.REGULAR}
+                  onPress={() => {}}
                 />
               </View>
               <Text style={styles.subText}>
@@ -88,22 +107,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.SLATE_200,
   },
-  text: {
-    fontFamily: fonts.REGULAR,
-    fontSize: 12,
-    lineHeight: 12,
-    color: colors.SLATE_800,
-  },
   subText: {
     fontFamily: fonts.REGULAR,
     fontSize: 10,
     color: colors.SLATE_500,
-  },
-  underLineText: {
-    fontFamily: fonts.REGULAR,
-    fontSize: 10,
-    color: colors.SLATE_500,
-    textDecorationLine: "underline",
   },
 });
 
