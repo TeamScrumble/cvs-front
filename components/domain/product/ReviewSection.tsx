@@ -1,131 +1,159 @@
-import { ReviewFilterMeta } from "@/app/product/[productId]/review";
+import { ReviewFilter } from "@/@types/review";
 import Divider from "@/components/Divider";
 import DetailReviewBar from "@/components/domain/product/DetailReviewBar";
 import ReviewStatus from "@/components/domain/product/ReviewStatus";
-import Review from "@/components/domain/review/Review";
+import ReviewItem from "@/components/domain/review/ReviewItem";
 import ViewAllReviewButton from "@/components/domain/review/ViewAllReviewButton";
 import Dropdown from "@/components/dropdown/Dropdown";
 import SegmentedControl from "@/components/SegmentedControl";
 import Toggle from "@/components/Toggle";
 import { colors, fonts } from "@/constants";
-import { DUMMY_REVIEW_LIST } from "@/constants/dummy";
+import { REVIEW_ORDER_OPTIONS, REVIEW_SORT_TYPE } from "@/constants/review";
+import useGetInfiniteReviews from "@/hooks/queries/review/useGetInfiniteReviews";
 import useGetReviewSummary from "@/hooks/queries/review/useGetReviewSummary";
-import { toPositiveInt } from "@/utils/index";
-import { useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useScrollToTop } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import Footer from "../Footer";
+import EmptyReviewSection from "./EmptyReviewSection";
 
-const ReviewSection = () => {
-  const { productId } = useLocalSearchParams<{ productId: string }>();
-  const productIdNum = toPositiveInt(productId);
-  const { data: summaryData } = useGetReviewSummary(productIdNum);
+type Props = {
+  productId: number;
+  HeaderComponent?: React.ReactNode;
+  FooterComponent?: React.ReactNode;
+  infiniteScroll?: boolean;
+}
 
-  const [meta, setMeta] = useState<ReviewFilterMeta>({
-    filter: "all",
-    onlyPictures: false,
-    order: "recommend",
+const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, FooterComponent }: Props) => {
+  const [filter, setFilter] = useState<ReviewFilter>({
+    receiptOnly: false,
+    imageOnly: false,
+    sort: REVIEW_SORT_TYPE.RECOMMENDED,
   });
-  const tooltipContent = useMemo(() => {
-    return "최신성, 도움돼요 수, 사진 첨부 여부를 종합 점수로 계산해 높은 순으로 정렬합니다.";
-  }, []);
+  const { data: summary } = useGetReviewSummary(productId);
+  const {
+    data: reviews,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useGetInfiniteReviews(productId, filter);
 
-  // 유효하지 않은 id값의 경우 에러화면 띄워야함
-  if (productIdNum === null) return null;
+  const ref = useRef<FlatList | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useScrollToTop(ref);
+
+  const handleEndReached = useCallback(() => {
+    if (!infiniteScroll) return;
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const handleRefresh = useCallback(async () => {
+    if (!infiniteScroll) return;
+    setIsRefreshing(true);
+    await refetch()
+    setIsRefreshing(false);
+  }, [refetch]);
+
   return (
-    <>
-      {/* 후기 */}
-      <DetailReviewBar
-        productId={productIdNum}
-        rating={summaryData?.averageRating ?? 0}
-        total={summaryData?.totalCount ?? 0}
-        hasButton
-      />
-      {/* 후기 통계 */}
-      <ReviewStatus productId={productIdNum} />
-      {/* 전체 / 영수증 후기 탭 */}
-      <SegmentedControl
-        value={meta.filter}
-        onValueChange={(v) =>
-          setMeta((prev) => ({ ...prev, filter: v as "all" | "receipt" }))
-        }
-      >
-        <SegmentedControl.Item
-          value="all"
-          label="전체"
-          count={summaryData?.totalCount ?? 0}
-        />
-        <SegmentedControl.Item
-          value="receipt"
-          label="영수증"
-          count={summaryData?.receiptCount ?? 0}
-        />
-      </SegmentedControl>
-      <View style={{ gap: 8 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {/* 사진 후기 토글 */}
-          <View style={styles.toggleWrapper}>
-            <Toggle
-              value={meta.onlyPictures}
-              onChange={(v) =>
-                setMeta((prev) => ({ ...prev, onlyPictures: v }))
-              }
-            />
-            <Text style={styles.toggleLabelText}>사진후기만</Text>
-          </View>
-          {/* 정렬 셀렉트 */}
-          <Dropdown
-            value={meta.order}
-            placeholder=""
-            onChange={(v) =>
-              setMeta((prev) => ({
-                ...prev,
-                order: v as ReviewFilterMeta["order"],
-              }))
-            }
-            options={[
-              {
-                label: "추천순",
-                value: "recommend",
-                tooltip: tooltipContent,
-              },
-              { label: "최신순", value: "latest" },
-              { label: "별점 높은 순", value: "highRating" },
-              { label: "별점 낮은 순", value: "lowRating" },
-              { label: "도움돼요 순", value: "helpful" },
-            ]}
-          />
+    <FlatList
+      ref={ref}
+      ListHeaderComponent={
+        <View style={{ gap: 16 }}>
+          {HeaderComponent}
+          {summary?.totalCount > 0 &&
+            <>
+              {/* 후기 */}
+              <DetailReviewBar
+                productId={productId}
+                rating={summary?.averageRating ?? 0}
+                total={summary?.totalCount ?? 0}
+                hasButton={!infiniteScroll && (summary?.totalCount ?? 0) > 0}
+              />
+              {/* 후기 통계 */}
+              <ReviewStatus productId={productId} />
+              {/* 전체 / 영수증 후기 탭 */}
+              <SegmentedControl
+                value={filter.receiptOnly ? "receipt" : "all"}
+                onValueChange={(v) =>
+                  setFilter((prev) => ({ ...prev, receiptOnly: v === "receipt" }))
+                }
+              >
+                <SegmentedControl.Item
+                  value="all"
+                  label="전체"
+                  count={summary?.totalCount ?? 0}
+                />
+                <SegmentedControl.Item
+                  value="receipt"
+                  label="영수증"
+                  count={summary?.receiptCount ?? 0}
+                />
+              </SegmentedControl>
+              <View style={{ gap: 8 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* 사진 후기 토글 */}
+                  <View style={styles.toggleWrapper}>
+                    <Toggle
+                      value={filter.imageOnly}
+                      onChange={(v) =>
+                        setFilter((prev) => ({ ...prev, imageOnly: v }))
+                      }
+                    />
+                    <Text style={styles.toggleLabelText}>사진후기만</Text>
+                  </View>
+                  {/* 정렬 셀렉트 */}
+                  <Dropdown
+                    value={filter.sort}
+                    placeholder=""
+                    onChange={(v) =>
+                      setFilter((prev) => ({
+                        ...prev,
+                        sort: v
+                      }))
+                    }
+                    options={REVIEW_ORDER_OPTIONS}
+                  />
+                </View>
+                <Divider borderColor={colors.SLATE_200} />
+              </View>
+            </>
+          }
         </View>
-        <Divider borderColor={colors.SLATE_200} />
-      </View>
-      {DUMMY_REVIEW_LIST.map((v, i) => {
-        return (
-          <Review
-            key={`ReviewItem_${i}`}
-            reviewId={v.reviewId}
-            nickname={v.nickname}
-            profileUrl={v.profileUrl}
-            rating={v.rating}
-            createdDate={v.createdDate}
-            hasReceipt={v.hasReceipt}
-            reviewCategoryList={v.reviewCategoryList}
-            content={v.content}
-            likeCount={v.likeCount}
-            isLast={DUMMY_REVIEW_LIST.length - 1 === i}
-          />
-        );
-      })}
-      <ViewAllReviewButton totalReviews={summaryData?.totalCount ?? 0} />
-    </>
+      }
+      data={reviews?.pages?.flat()}
+      renderItem={({ item, index }) => <ReviewItem review={item} isLast={index === (reviews?.pages?.flat()?.length ?? 0) - 1} />}
+      keyExtractor={(item) => String(item.reviewId)}
+      contentContainerStyle={styles.contentContainer}
+      onEndReached={handleEndReached} // 하단에 도달했을때 이벤트 발생
+      onEndReachedThreshold={0.5} // 0.5인 경우 하단에 완전히 닿지 않아도 onEndReached를 트리거함
+      refreshing={isRefreshing}
+      onRefresh={handleRefresh}
+      ListFooterComponent={() => (!infiniteScroll && (<>
+        {summary?.totalCount > 0 && <ViewAllReviewButton totalReviews={summary?.totalCount ?? 0} productId={productId} />}
+        <Footer />
+      </>))}
+      ListEmptyComponent={<EmptyReviewSection />}
+    />
   )
 }
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    gap: 16,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 56,
+  },
   toggleWrapper: {
     flexDirection: "row",
     alignItems: "center",

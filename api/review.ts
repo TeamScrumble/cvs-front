@@ -1,13 +1,31 @@
 import { CR } from "@/@types/dto";
 import { https } from "./axios";
-import { Aspect, ReportReason } from "@/@types/review";
+import { Aspect, ReportReason, Review } from "@/@types/review";
 import {
   CreateReviewReportRequest,
   CreateReviewRequest,
+  GetReviewsRequest,
   GetReviewSummaryDTO,
 } from "@/@types/dto/reviewDto";
 
-const getReviews = async () => {};
+const getReviews = async ({productId, page, pageSize, filter }: GetReviewsRequest) => {
+  console.log("[getReviews] start!");
+
+  const { data } = await https.get<CR<Review[]>>("/api/product/review", {
+    params: {
+      productId,
+      page,
+      pageSize,
+      receiptOnly: filter.receiptOnly,
+      imageOnly: filter.imageOnly,
+      sort: filter.sort,
+    }
+  });
+
+  console.log("[getReviews] data:", data);
+
+  return data.body;
+};
 
 const getReviewSummary = async (productId: number) => {
   const { data } = await https.get<CR<GetReviewSummaryDTO>>("/api/product/review/summary", {

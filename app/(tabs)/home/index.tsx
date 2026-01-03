@@ -35,7 +35,7 @@ export default function HomeScreen() {
         >
           <CustomButton
             label="상세화면으로 이동"
-            onPress={() => router.push("/product/3")}
+            onPress={() => router.push("/product/18")}
           />
         </View>
       </SafeAreaView>

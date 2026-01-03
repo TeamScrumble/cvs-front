@@ -8,6 +8,9 @@ const queryKeys = {
   GET_ASPECTINFO: "getAspectInfo",
   GET_REPORT_REASON: "getReportReason",
   GET_REVEIW_SUMMARY: "getReviewSummary",
+  GET_REVIEWS: "getReviews",
+  REVIEW_IMAGE_ONLY: (b: boolean) => `reviewImageOnly-${b}`,
+  REVIEW_RECEIPT_ONLY: (b: boolean) => `reviewReceiptOnly-${b}`,
 };
 
 export { queryKeys };

@@ -1,34 +1,37 @@
 import CustomButton from "@/components/button/CustomButton";
 import IconButton from "@/components/button/IconButton";
 import { colors, fonts, icons } from "@/constants";
+import useGetProduct from "@/hooks/queries/product/useGetProduct";
+import useLikeProduct from "@/hooks/queries/product/useLikeProduct";
 import { formatLikeNumber } from "@/utils";
 import { router } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-interface BottomBarProps {
-  productId: string;
-  isLike: boolean;
-  totalLikes: number;
-  onPressLike: () => void;
+type Props = {
+  productId: number;
 }
 
-function BottomBar({
+const BottomBar = ({
   productId,
-  isLike,
-  totalLikes,
-  onPressLike,
-}: BottomBarProps) {
+}: Props) => {
+  const { data: product } = useGetProduct(productId);
+  const likeProduct = useLikeProduct();
+
+  const handleLikeProduct = useCallback(() => {
+    likeProduct.mutate(productId);
+  }, [likeProduct, productId]);
+
   return (
     <View style={styles.container}>
       <View style={styles.iconButtonWrapper}>
         <IconButton
-          icon={isLike ? icons.heartFill : icons.heartLight}
-          color={isLike ? colors.RED : colors.SLATE_500}
+          icon={product?.isLiked ? icons.heartFill : icons.heartLight}
+          color={product?.isLiked ? colors.RED : colors.SLATE_500}
           size={24}
-          onPress={onPressLike}
+          onPress={handleLikeProduct}
         />
-        <Text style={styles.countText}>{formatLikeNumber(totalLikes)}</Text>
+        <Text style={styles.countText}>{formatLikeNumber(product?.product.likeCount ?? 0)}</Text>
       </View>
       <CustomButton
         label="후기 작성하기"

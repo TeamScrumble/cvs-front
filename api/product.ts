@@ -21,9 +21,12 @@ const getProducts = async (cvsTarget: BrandType) => {
 };
 
 const getProduct = async (productId: number) => {
+  console.log("[getProduct] start!");
   const { data } = await https.get<CR<GetProductDTO>>(
     `/api/product/${productId}`
   );
+
+  console.log("[getProduct] data:", data);
 
   return data.body;
 };

@@ -27,9 +27,11 @@ let authTokenRequest: Promise<AuthTokenDTO> | null = null;
 
 https.interceptors.request.use(async (config) => {
   const accessToken = await getSecureStore(tokenKeys.ACCESS);
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
+  
+  config.headers.Authorization = `Bearer ${accessToken}`;
+
+  console.log("[Interceptor] request.headers.Authorization:", config.headers.Authorization);
+
   return config;
 });
 
@@ -45,11 +47,15 @@ https.interceptors.response.use(
 
     if (!response) return Promise.reject(error);
 
-    console.log("[Interceptor] originalRequest url:", originalRequest.url);
+    // console.log("[Interceptor] response: ", response);
+    // console.log("[Interceptor] originalRequest: ", originalRequest);
+
     console.log(
       "[Interceptor] originalRequest response.status: ",
       response.status
     );
+    console.log("[Interceptor] originalRequest url:", originalRequest.url);
+    console.log("[Interceptor] originalRequest.headers.Authorization:", originalRequest.headers?.Authorization);
     console.log(
       "[Interceptor] originalRequest __isRetryRequest: ",
       originalRequest.__isRetryRequest
@@ -115,6 +121,7 @@ const reissue = async (): Promise<AuthTokenDTO> => {
       "X-Refresh-Token": `Bearer ${refreshToken}`,
     },
   });
+
   console.log("[reissue] data:", data.body);
 
   return data.body;

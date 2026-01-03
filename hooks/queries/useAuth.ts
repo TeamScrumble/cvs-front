@@ -6,18 +6,16 @@ import { getMe } from "@/api/member";
 import queryClient from "@/api/queryClient";
 import { tokenKeys } from "@/constants/auth";
 import { queryKeys } from "@/constants/queryKey";
-import { removeHeader } from "@/utils/header";
 import { deleteSecureStore, saveSecureStore } from "@/utils/secureStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { openURL } from "expo-linking";
 import { router } from "expo-router";
 
-const useGetMe = (options?: { enabled?: boolean }) => {
+const useGetMe = () => {
   const { data, isLoading } = useQuery({
     queryFn: getMe,
     queryKey: [queryKeys.AUTH, queryKeys.GET_ME],
     staleTime: Infinity,
-    enabled: options?.enabled,
   });
 
   return { data, isLoading };
@@ -54,12 +52,9 @@ const useLogout = () => {
     onSuccess: async ({ success }: { success: boolean }) => {
       console.log("[useLogout] onSuccess: start!");
       if (success) {
-        removeHeader("Authorization");
+        console.log("[useLogout] onSuccess: deleteSecureStore");
         await deleteSecureStore(tokenKeys.ACCESS);
         await deleteSecureStore(tokenKeys.REFRESH);
-        console.log(
-          "[useLogout] onSuccess: removeHeader and deleteSecureStore"
-        );
         console.log("[useLogout] onSuccess: queryClient clear!");
         queryClient.clear();
       }
@@ -81,8 +76,8 @@ const useAuthQuery = () => {
       profileImage: data?.profileImage || "",
     },
     isLoading,
-  }
-}
+  };
+};
 
 const useAuthAction = () => {
   const exchangeMutation = useExchange();

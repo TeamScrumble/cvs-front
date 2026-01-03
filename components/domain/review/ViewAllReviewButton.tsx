@@ -1,18 +1,18 @@
 import { colors, fonts, icons } from "@/constants";
 import { router } from "expo-router";
-import React from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 import Icon from "react-native-iconify";
 
-interface ViewAllReviewButtonProps {
+type Props = {
+  productId: number;
   totalReviews: number;
 }
 
-function ViewAllReviewButton({ totalReviews }: ViewAllReviewButtonProps) {
+const ViewAllReviewButton = ({ productId, totalReviews }: Props) => {
   return (
     <Pressable
       style={styles.container}
-      onPress={() => router.push("/product/2/review")}
+      onPress={() => router.push(`/product/${productId}/review`)}
     >
       <Text
         style={styles.text}
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 4,
-    marginBottom: 16,
+    marginBottom: 32,
   },
   text: {
     fontFamily: fonts.REGULAR,

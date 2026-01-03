@@ -1,20 +1,31 @@
 import { useAuthQuery } from "@/hooks/queries/useAuth";
 import { Redirect } from "expo-router";
-import React, { ReactNode } from "react";
-import { Text } from "react-native";
+import React, { ReactNode, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Loading from "../Loading";
 
-interface AuthRouteProps {
+type Props = {
   children: ReactNode;
 }
 
-const AuthRoute = ({ children }: AuthRouteProps) => {
-  const { auth, isLoading } = useAuthQuery();
+const MIN_LOADING_TIME = 800;
 
-  if (isLoading) {
+const AuthRoute = ({ children }: Props) => {
+  const { auth, isLoading } = useAuthQuery();
+  const [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoading(false);
+    }, MIN_LOADING_TIME);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading || showLoading) {
     return (
-      <SafeAreaView>
-        <Text>로딩중입니다</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Loading />
       </SafeAreaView>
     );
   }

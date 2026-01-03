@@ -3,14 +3,14 @@ import { Image, StyleSheet } from "react-native";
 import EmptyProfileImage from "@/assets/images/empty_profile.svg";
 
 interface ProfileImageProps {
-  profileUrl: string;
+  profileImage: string;
 }
 
-function ProfileImage({ profileUrl }: ProfileImageProps) {
+function ProfileImage({ profileImage }: ProfileImageProps) {
   return (
     <>
-      {profileUrl.length > 0 ? (
-        <Image src={profileUrl} alt={profileUrl} style={styles.container} />
+      {profileImage.length > 0 ? (
+        <Image src={profileImage} alt={profileImage} style={styles.container} />
       ) : (
         <EmptyProfileImage style={styles.container} />
       )}

@@ -1,3 +1,5 @@
+import { ReviewFilter } from "../review";
+
 export type CreateReviewRequest = {
   productId: number;
   rating: number;
@@ -32,4 +34,11 @@ export type GetReviewSummaryDTO = {
       count: number;
     }[];
   }[];
+}
+
+export type GetReviewsRequest = {
+  productId: number;
+  page: number;
+  filter: ReviewFilter;
+  pageSize?: number;
 }

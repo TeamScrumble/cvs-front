@@ -1,36 +1,37 @@
+import CustomButton from "@/components/button/CustomButton";
 import { colors, fonts } from "@/constants";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import StarRating from "../StarRating";
 import ProfileImage from "../ProfileImage";
+import StarRating from "../StarRating";
 import ReceiptBadge from "./ReceiptBadge";
-import { router, useLocalSearchParams } from "expo-router";
-import CustomButton from "@/components/button/CustomButton";
+import dayjs from "dayjs";
 
-interface ReviewHeaderProps {
+type Props = {
   reviewId: number;
   nickname: string;
-  profileUrl: string;
+  profileImage: string;
   rating: number;
-  createdDate: string; // todo: dateTime
+  lastModifiedAt: string;
   hasReceipt: boolean;
 }
 
-function ReviewHeader({
+const ReviewHeader = ({
   reviewId,
   nickname,
-  profileUrl,
+  profileImage,
   rating,
-  createdDate,
+  lastModifiedAt,
   hasReceipt,
-}: ReviewHeaderProps) {
+}: Props) => {
   const { productId } = useLocalSearchParams();
   const handleReportPress = () =>
     router.push(`/product/${productId}/review/${reviewId}/report`);
 
   return (
     <View style={styles.container}>
-      <ProfileImage profileUrl={profileUrl} />
+      <ProfileImage profileImage={profileImage} />
       <View style={{ gap: 2, flex: 1 }}>
         <View style={styles.nicknameContainer}>
           <Text style={styles.nicknameText}>{nickname}</Text>
@@ -39,7 +40,7 @@ function ReviewHeader({
         <View style={styles.ratingContainer}>
           <StarRating rating={rating} />
           <View style={styles.textWrapper}>
-            <Text style={styles.text}>{createdDate}</Text>
+            <Text style={styles.text}>{dayjs(lastModifiedAt).format("YY.MM.DD")}</Text>
             <View style={styles.verticalDivdier} />
             <CustomButton
               label="신고"

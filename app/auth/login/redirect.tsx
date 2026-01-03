@@ -3,6 +3,8 @@ import { getSecureStore } from "@/utils/secureStore";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback } from "react";
 import { useAuthAction } from "@/hooks/queries/useAuth";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Loading from "@/components/Loading";
 
 function RedirectScreen() {
   const params = useLocalSearchParams();
@@ -28,7 +30,9 @@ function RedirectScreen() {
     }, [])
   );
 
-  return null;
+  return (<SafeAreaView>
+    <Loading />
+  </SafeAreaView>);
 }
 
 export default RedirectScreen;
