@@ -4,7 +4,7 @@ export const brands: Record<typeof BRAND_LIST[number], { name: string }> = {
   GS25: { name: "GS25" },
   CU: { name: "CU" },
   SEVEN_ELEVEN: { name: "7ELEVEN" },
-  EMART24: { name: "emart24" },
+  EMART24: { name: "이마트24" },
 } as const;
 
 export type BrandType = typeof BRAND_LIST[number];
