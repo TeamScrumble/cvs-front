@@ -1,13 +1,12 @@
 import { BrandType } from "@/@types/brand";
 import { PlusEventType } from "@/@types/event";
-import { colors, fonts } from "@/constants";
+import Badge from "@/components/Badge";
+import { colors } from "@/constants";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
-interface EventBadgeProps {
+type EventBadgeProps = {
   brandType?: BrandType;
   plusEventType?: PlusEventType;
-  isSaleEnd?: boolean
 }
 
 const badgeColors: Record<BrandType, Record<PlusEventType, string>> = {
@@ -29,32 +28,14 @@ const badgeColors: Record<BrandType, Record<PlusEventType, string>> = {
   },
 };
 
-function EventBadge({ brandType = "CU", plusEventType = "1+1", isSaleEnd = false }: EventBadgeProps) {
+const EventBadge = ({ brandType = "CU", plusEventType = "1+1" }: EventBadgeProps) => {
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: isSaleEnd ? "#1A1A1AB2" : badgeColors[brandType][plusEventType] },
-      ]}
-    >
-      <Text style={styles.text}>{isSaleEnd ? "판매 종료" : plusEventType}</Text>
-    </View>
+    <Badge 
+      backgroundColor={badgeColors[brandType][plusEventType]} 
+      color={colors.WHITE} 
+      text={plusEventType} 
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: 33,
-    height: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 2,
-  },
-  text: {
-    fontFamily: fonts.BOLD,
-    fontSize: 12,
-    color: colors.WHITE,
-  },
-});
 
 export default EventBadge;

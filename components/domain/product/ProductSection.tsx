@@ -1,32 +1,34 @@
+import SafeImage from "@/components/image/SafeImage";
 import useGetProduct from "@/hooks/queries/product/useGetProduct";
 import { View } from "react-native";
 import DetailTitle from "./DetailTitle";
-import SafeImage from "@/components/image/SafeImage";
 
 type Props = {
   productId: number;
 }
 
 const ProductSection = ({ productId }: Props) => {
-  const { data: product } = useGetProduct(productId);
+  const { data } = useGetProduct(productId);
 
   return (
     <View style={{ gap: 16 }}>
-      <SafeImage 
-        uri={product.product.img} 
+      <SafeImage
+        uri={data.product.img}
         showErrorResult
       />
       {/* 상세 화면 타이틀 */}
-      {product && (
+      {data && (
         <DetailTitle
-          productTitle={product.product.title || ""}
-          productPrice={`${product.product.price.toLocaleString()}원`}
+          productTitle={data.product.title || ""}
+          productPrice={`${data.product.price.toLocaleString()}원`}
           eventBadgeList={[
             {
-              brand: product.product.cvsTarget,
-              plusEvent: product.product.event,
+              brand: data.product.cvsTarget,
+              plusEvent: data.product.event,
             },
           ]}
+          isNewProduct={data.product.isNewProduct}
+          isDeleted={data.product.isDeleted}
         />
       )}
     </View>

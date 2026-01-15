@@ -9,6 +9,7 @@ export type Product = {
   img: string;
   price: number;
   event: PlusEventType;
-  isNew: boolean;
+  isNewProduct: boolean;
   likeCount: number;
+  isDeleted: boolean;
 }

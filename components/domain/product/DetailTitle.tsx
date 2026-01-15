@@ -1,26 +1,33 @@
 import { BrandType } from "@/@types/brand";
 import { PlusEventType } from "@/@types/event";
+import Badge from "@/components/Badge";
 import { colors, fonts, icons } from "@/constants";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import IconButton from "../../button/IconButton";
 import EventBadge from "./EventBadge";
 
-interface DetailTitleProps {
+type Props = {
   productTitle: string;
   productPrice: string;
   eventBadgeList?: { brand: BrandType; plusEvent: PlusEventType }[];
+  isNewProduct?: boolean;
+  isDeleted?: boolean;
 }
 
-function DetailTitle({
+const DetailTitle = ({
   eventBadgeList = [],
+  isNewProduct,
+  isDeleted,
   productTitle,
   productPrice,
-}: DetailTitleProps) {
+}: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.badgeContainer}>
-        <IconButton icon={icons.share} size={24} onPress={() => {}} />
+        <IconButton icon={icons.share} size={24} onPress={() => { }} />
+        {isNewProduct && <Badge backgroundColor={colors.BACKGROUND} color={colors.MAIN} text="NEW" />}
+        {isDeleted && <Badge backgroundColor={"#1A1A1AB3"} color={colors.WHITE} text="판매 종료" />}
         {eventBadgeList.map((v, i) => {
           return (
             <EventBadge
