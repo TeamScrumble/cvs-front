@@ -34,11 +34,13 @@ const BottomBar = ({
         <Text style={styles.countText}>{formatLikeNumber(product?.product.likeCount ?? 0)}</Text>
       </View>
       <CustomButton
-        label="후기 작성하기"
+        label={product.product.isDeleted ? "판매 종료 상품입니다" : "후기 작성하기"}
         containerStyle={{ flex: 1 }}
         onPress={() => {
+          if (product.product.isDeleted) return;
           router.push(`/product/${productId}/review/write`);
         }}
+        disabled={product.product.isDeleted}
       />
     </View>
   );

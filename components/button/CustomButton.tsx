@@ -40,11 +40,11 @@ const CustomButton = ({
       style={({ pressed }) => [
         styles.container,
         styles[variant],
-        props.disabled && styles.disabled,
         pressed && styles.pressed,
         bgColor && { backgroundColor: bgColor },
         bdColor && { borderColor: bdColor },
         containerStyle,
+        props.disabled && styles.disabled,
       ]}
       {...props}
     >
@@ -55,6 +55,7 @@ const CustomButton = ({
           letterSpacing !== undefined && { letterSpacing },
           fontFamily && { fontFamily },
           color && { color },
+          props.disabled && styles.disabledText,
         ]}
       >
         {label}
@@ -85,11 +86,8 @@ const styles = StyleSheet.create({
   },
   standard: {},
   underline: {},
-  pressed: {
-    opacity: 0.8,
-  },
   disabled: {
-    backgroundColor: colors.SLATE_300,
+    backgroundColor: colors.SLATE_TINT_5,
   },
   filledText: {
     color: colors.WHITE,
@@ -103,6 +101,12 @@ const styles = StyleSheet.create({
   underlineText: {
     color: colors.SLATE_500,
     textDecorationLine: "underline",
+  },
+  disabledText: {
+    color: colors.SLATE_300,
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });
 
