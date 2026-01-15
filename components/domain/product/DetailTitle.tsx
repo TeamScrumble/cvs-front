@@ -40,7 +40,6 @@ function DetailTitle({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    gap: 8,
   },
   badgeContainer: {
     flexDirection: "row-reverse",

@@ -42,3 +42,8 @@ export type GetReviewsRequest = {
   filter: ReviewFilter;
   pageSize?: number;
 }
+
+export type LikeReviewDTO = {
+  liked: boolean;
+  likeCount: number;
+}

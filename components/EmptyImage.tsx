@@ -15,8 +15,7 @@ function EmptyImage() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.SLATE_TINT_10,
-    width: 320,
-    height: 320,
+    width: "100%",
     aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",

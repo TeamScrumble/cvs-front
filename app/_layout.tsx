@@ -12,9 +12,31 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
+import { queryKeys } from "@/constants/queryKey";
+import { getMe } from "@/api/member";
+import { getReviewAspectInfo, getReviewReportReason } from "@/api/review";
 
 // 스플래시 스크린이 자동으로 숨겨지지 않도록 설정
 SplashScreen.preventAutoHideAsync();
+
+const PreloadQueries = () => {
+  useEffect(() => {
+    console.log("[PreloadQueries] start!");
+    queryClient.prefetchQuery({
+      queryFn: () => getMe,
+      queryKey: [queryKeys.AUTH],
+    });
+    queryClient.prefetchQuery({
+      queryFn: () => getReviewAspectInfo,
+      queryKey: [queryKeys.REVIEW, queryKeys.GET_ASPECTINFO],
+    });
+    queryClient.prefetchQuery({
+      queryFn: () => getReviewReportReason,
+      queryKey: [queryKeys.REVIEW, queryKeys.GET_REPORT_REASON],
+    });
+  }, []);
+  return null;
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontMap);
@@ -40,6 +62,7 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <PreloadQueries />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <PortalProvider>
           {/* 상단 상태바 */}

@@ -27,6 +27,7 @@ export type Review = {
   content: string;
   likeCount: number;
   isLikeByMe: boolean;
+  isReceipt: boolean;
   lastModifiedAt: string;
   scores: {
     aspectId: number;

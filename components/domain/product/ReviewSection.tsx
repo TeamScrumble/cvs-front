@@ -4,7 +4,7 @@ import DetailReviewBar from "@/components/domain/product/DetailReviewBar";
 import ReviewStatus from "@/components/domain/product/ReviewStatus";
 import ReviewItem from "@/components/domain/review/ReviewItem";
 import ViewAllReviewButton from "@/components/domain/review/ViewAllReviewButton";
-import Dropdown from "@/components/dropdown/Dropdown";
+import Dropdown, { DropdownRef } from "@/components/dropdown/Dropdown";
 import SegmentedControl from "@/components/SegmentedControl";
 import Toggle from "@/components/Toggle";
 import { colors, fonts } from "@/constants";
@@ -16,6 +16,9 @@ import React, { useCallback, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import Footer from "../Footer";
 import EmptyReviewSection from "./EmptyReviewSection";
+import ReviewItemSkeleton from "../review/ReviewItemSkeleton";
+import useAddReviewLike from "@/hooks/queries/review/useAddReviewLike";
+import useDeleteReviewLike from "@/hooks/queries/review/useDeleteReviewLike";
 
 type Props = {
   productId: number;
@@ -28,7 +31,7 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
   const [filter, setFilter] = useState<ReviewFilter>({
     receiptOnly: false,
     imageOnly: false,
-    sort: REVIEW_SORT_TYPE.RECOMMENDED,
+    sort: REVIEW_SORT_TYPE.LATEST,
   });
   const { data: summary } = useGetReviewSummary(productId);
   const {
@@ -37,9 +40,14 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
     hasNextPage,
     isFetchingNextPage,
     refetch,
+    isLoading,
   } = useGetInfiniteReviews(productId, filter);
+  const addReviewLike = useAddReviewLike(productId, filter);
+  const deleteReviewLike = useDeleteReviewLike(productId, filter);
 
   const ref = useRef<FlatList | null>(null);
+  const dropdownRef = useRef<DropdownRef>(null);
+
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useScrollToTop(ref);
@@ -58,92 +66,110 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
     setIsRefreshing(false);
   }, [refetch]);
 
+  const handleScrollBeginDrag = useCallback(() => {
+    dropdownRef.current?.close();
+  }, [dropdownRef, dropdownRef.current]);
+
   return (
-    <FlatList
-      ref={ref}
-      ListHeaderComponent={
-        <View style={{ gap: 16 }}>
-          {HeaderComponent}
-          {summary?.totalCount > 0 &&
-            <>
-              {/* 후기 */}
-              <DetailReviewBar
-                productId={productId}
-                rating={summary?.averageRating ?? 0}
-                total={summary?.totalCount ?? 0}
-                hasButton={!infiniteScroll && (summary?.totalCount ?? 0) > 0}
-              />
-              {/* 후기 통계 */}
-              <ReviewStatus productId={productId} />
-              {/* 전체 / 영수증 후기 탭 */}
-              <SegmentedControl
-                value={filter.receiptOnly ? "receipt" : "all"}
-                onValueChange={(v) =>
-                  setFilter((prev) => ({ ...prev, receiptOnly: v === "receipt" }))
-                }
-              >
-                <SegmentedControl.Item
-                  value="all"
-                  label="전체"
-                  count={summary?.totalCount ?? 0}
+    <>
+      <FlatList
+        ref={ref}
+        ListHeaderComponent={
+          <View style={{ gap: 16 }}>
+            {HeaderComponent}
+            {summary?.totalCount > 0 &&
+              <>
+                {/* 후기 */}
+                <DetailReviewBar
+                  productId={productId}
+                  rating={summary?.averageRating ?? 0}
+                  total={summary?.totalCount ?? 0}
+                  hasButton={!infiniteScroll && (summary?.totalCount ?? 0) > 0}
                 />
-                <SegmentedControl.Item
-                  value="receipt"
-                  label="영수증"
-                  count={summary?.receiptCount ?? 0}
-                />
-              </SegmentedControl>
-              <View style={{ gap: 8 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
+                {/* 후기 통계 */}
+                <ReviewStatus productId={productId} />
+                {/* 전체 / 영수증 후기 탭 */}
+                <SegmentedControl
+                  value={filter.receiptOnly ? "receipt" : "all"}
+                  onValueChange={(v) =>
+                    setFilter((prev) => ({ ...prev, receiptOnly: v === "receipt" }))
+                  }
                 >
-                  {/* 사진 후기 토글 */}
-                  <View style={styles.toggleWrapper}>
-                    <Toggle
-                      value={filter.imageOnly}
-                      onChange={(v) =>
-                        setFilter((prev) => ({ ...prev, imageOnly: v }))
-                      }
-                    />
-                    <Text style={styles.toggleLabelText}>사진후기만</Text>
-                  </View>
-                  {/* 정렬 셀렉트 */}
-                  <Dropdown
-                    value={filter.sort}
-                    placeholder=""
-                    onChange={(v) =>
-                      setFilter((prev) => ({
-                        ...prev,
-                        sort: v
-                      }))
-                    }
-                    options={REVIEW_ORDER_OPTIONS}
+                  <SegmentedControl.Item
+                    value="all"
+                    label="전체"
+                    count={summary?.totalCount ?? 0}
                   />
+                  <SegmentedControl.Item
+                    value="receipt"
+                    label="영수증"
+                    count={summary?.receiptCount ?? 0}
+                  />
+                </SegmentedControl>
+                <View style={{ gap: 8 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    {/* 사진 후기 토글 */}
+                    <View style={styles.toggleWrapper}>
+                      <Toggle
+                        value={filter.imageOnly}
+                        onChange={(v) =>
+                          setFilter((prev) => ({ ...prev, imageOnly: v }))
+                        }
+                      />
+                      <Text style={styles.toggleLabelText}>사진후기만</Text>
+                    </View>
+                    {/* 정렬 셀렉트 */}
+                    <Dropdown
+                      ref={dropdownRef}
+                      value={filter.sort}
+                      placeholder=""
+                      onChange={(v) =>
+                        setFilter((prev) => ({
+                          ...prev,
+                          sort: v
+                        }))
+                      }
+                      options={REVIEW_ORDER_OPTIONS}
+                    />
+                  </View>
+                  <Divider borderColor={colors.SLATE_200} />
                 </View>
-                <Divider borderColor={colors.SLATE_200} />
-              </View>
+              </>
+            }
+          </View>
+        }
+        data={reviews?.pages?.flat()}
+        renderItem={({ item, index }) => <ReviewItem review={item} isLast={index === (reviews?.pages?.flat()?.length ?? 0) - 1} addReviewLike={addReviewLike.mutate} deleteReviewLike={deleteReviewLike.mutate} />}
+        keyExtractor={(item) => String(item.reviewId)}
+        contentContainerStyle={styles.contentContainer}
+        onEndReached={handleEndReached} // 하단에 도달했을때 이벤트 발생
+        onEndReachedThreshold={0.5} // 0.5인 경우 하단에 완전히 닿지 않아도 onEndReached를 트리거함
+        refreshing={isRefreshing}
+        onRefresh={handleRefresh}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        ListFooterComponent={() => (!infiniteScroll && (<>
+          {summary?.totalCount > 0 && <ViewAllReviewButton totalReviews={summary?.totalCount ?? 0} productId={productId} />}
+          <Footer />
+        </>))}
+        ListEmptyComponent={
+          isLoading ? (
+            <>
+              <ReviewItemSkeleton />
+              <Divider borderColor={colors.SLATE_200} style={{ marginTop: 4 }} />
+              <ReviewItemSkeleton />
+              <Divider borderColor={colors.SLATE_200} style={{ marginTop: 4 }} />
+              <ReviewItemSkeleton />
             </>
-          }
-        </View>
-      }
-      data={reviews?.pages?.flat()}
-      renderItem={({ item, index }) => <ReviewItem review={item} isLast={index === (reviews?.pages?.flat()?.length ?? 0) - 1} />}
-      keyExtractor={(item) => String(item.reviewId)}
-      contentContainerStyle={styles.contentContainer}
-      onEndReached={handleEndReached} // 하단에 도달했을때 이벤트 발생
-      onEndReachedThreshold={0.5} // 0.5인 경우 하단에 완전히 닿지 않아도 onEndReached를 트리거함
-      refreshing={isRefreshing}
-      onRefresh={handleRefresh}
-      ListFooterComponent={() => (!infiniteScroll && (<>
-        {summary?.totalCount > 0 && <ViewAllReviewButton totalReviews={summary?.totalCount ?? 0} productId={productId} />}
-        <Footer />
-      </>))}
-      ListEmptyComponent={<EmptyReviewSection />}
-    />
+          ) : <EmptyReviewSection />
+        }
+      />
+    </>
   )
 }
 

@@ -27,7 +27,6 @@ interface Props<T> {
   maxHeight: number;
 
   onSelect: (value: T) => void;
-  onClose: () => void;
 }
 
 export default function DropdownList<T>({
@@ -40,7 +39,6 @@ export default function DropdownList<T>({
   width,
   maxHeight,
   onSelect,
-  onClose,
 }: Props<T>) {
   const insets = useSafeAreaInsets();
 
@@ -49,7 +47,7 @@ export default function DropdownList<T>({
   const { height: windowHeight, width: windowWidth } = Dimensions.get("window");
   const { x, y, width: triggerWidth, height: triggerHeight } = triggerLayout;
 
-  const spaceBelow = windowHeight - (y + triggerHeight + insets.bottom);
+  const spaceBelow = windowHeight - (y + triggerHeight + insets.bottom + 16);
   const isOpenUpwards = spaceBelow < maxHeight;
 
   // Trigger 너비와 Content 너비 분리 및 자동 정렬
@@ -62,56 +60,46 @@ export default function DropdownList<T>({
 
   const positionStyle = isOpenUpwards
     ? {
-      bottom: triggerHeight + 4,
-      left: horizontalPosition,
+      bottom: windowHeight - y + triggerHeight + 20,
+      left: x + horizontalPosition,
       width: width,
     }
     : {
-      top: triggerHeight + 4,
-      left: horizontalPosition,
+      top: y + triggerHeight + 32,
+      left: x + horizontalPosition,
       width: width,
     };
 
   return (
-    <>
-      {/* Backdrop */}
-      <Pressable
-        style={StyleSheet.absoluteFill}
-        onPress={onClose}
-        pointerEvents="auto"
-      />
-
-      {/* Option List */}
-      <View
-        style={[
-          styles.dropdown,
-          dropdownStyle,
-          positionStyle
-        ]}
-        pointerEvents="box-none"
-      >
-        {options.map((opt) => (
-          <TouchableOpacity
-            key={String(opt.value)}
-            onPress={() => onSelect(opt.value)}
-            style={[styles.item, opt.value === value && styles.selectedItem, optionStyle]}
-            activeOpacity={0.8}
+    <View
+      style={[
+        styles.dropdown,
+        dropdownStyle,
+        positionStyle
+      ]}
+      pointerEvents="auto"
+    >
+      {options.map((opt) => (
+        <TouchableOpacity
+          key={String(opt.value)}
+          onPress={() => onSelect(opt.value)}
+          style={[styles.item, opt.value === value && styles.selectedItem, optionStyle]}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.itemText,
+              opt.value === value && styles.selectedItemText,
+            ]}
           >
-            <Text
-              style={[
-                styles.itemText,
-                opt.value === value && styles.selectedItemText,
-              ]}
-            >
-              {opt.label}
-            </Text>
-            {opt.tooltip && (
-              <TooltipWithIcon content={opt.tooltip} />
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-    </>
+            {opt.label}
+          </Text>
+          {opt.tooltip && (
+            <TooltipWithIcon content={opt.tooltip} />
+          )}
+        </TouchableOpacity>
+      ))}
+    </View>
   );
 }
 

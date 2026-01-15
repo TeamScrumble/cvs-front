@@ -6,7 +6,7 @@ const useGetReviewAspectInfo = () => {
   return useQuery({
     queryFn: () => getReviewAspectInfo(),
     queryKey: [queryKeys.REVIEW, queryKeys.GET_ASPECTINFO],
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 };
 

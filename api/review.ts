@@ -6,9 +6,15 @@ import {
   CreateReviewRequest,
   GetReviewsRequest,
   GetReviewSummaryDTO,
+  LikeReviewDTO,
 } from "@/@types/dto/reviewDto";
 
-const getReviews = async ({productId, page, pageSize, filter }: GetReviewsRequest) => {
+const getReviews = async ({
+  productId,
+  page,
+  pageSize,
+  filter,
+}: GetReviewsRequest) => {
   console.log("[getReviews] start!");
 
   const { data } = await https.get<CR<Review[]>>("/api/product/review", {
@@ -19,7 +25,7 @@ const getReviews = async ({productId, page, pageSize, filter }: GetReviewsReques
       receiptOnly: filter.receiptOnly,
       imageOnly: filter.imageOnly,
       sort: filter.sort,
-    }
+    },
   });
 
   console.log("[getReviews] data:", data);
@@ -28,9 +34,12 @@ const getReviews = async ({productId, page, pageSize, filter }: GetReviewsReques
 };
 
 const getReviewSummary = async (productId: number) => {
-  const { data } = await https.get<CR<GetReviewSummaryDTO>>("/api/product/review/summary", {
-    params: { productId }
-  });
+  const { data } = await https.get<CR<GetReviewSummaryDTO>>(
+    "/api/product/review/summary",
+    {
+      params: { productId },
+    }
+  );
 
   return data.body;
 };
@@ -75,6 +84,22 @@ const createReviewReport = async ({
   return data.body;
 };
 
+const addReviewLike = async (reviewId: number) => {
+  const { data } = await https.post<CR<LikeReviewDTO>>(
+    `/api/product/review/${reviewId}/like`
+  );
+
+  return data.body;
+};
+
+const deleteReviewLike = async (reviewId: number) => {
+  const { data } = await https.delete<CR<LikeReviewDTO>>(
+    `/api/product/review/${reviewId}/like`
+  );
+
+  return data.body;
+};
+
 export {
   getReviews,
   getReviewSummary,
@@ -82,4 +107,6 @@ export {
   getReviewReportReason,
   createReview,
   createReviewReport,
+  addReviewLike,
+  deleteReviewLike,
 };

@@ -1,11 +1,9 @@
-import Divider from "@/components/Divider";
-import { colors, fonts } from "@/constants";
+import { colors } from "@/constants";
 import React, { useMemo, useState } from "react";
 import {
   Image,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import LikeButton from "./LikeButton";
@@ -15,14 +13,18 @@ interface ReviewContentProps {
   content: string;
   imageUrlList?: string[];
   likeCount: number;
-  clicked?: boolean;
+  isLikeByMe?: boolean;
+  addReviewLike: () => void;
+  deleteReviewLike: () => void;
 }
 
 function ReviewContent({
   content,
   imageUrlList = [],
   likeCount,
-  clicked = false,
+  isLikeByMe = false,
+  addReviewLike,
+  deleteReviewLike,
 }: ReviewContentProps) {
   const [isZoomIn, setIsZoomIn] = useState(false);
 
@@ -31,37 +33,33 @@ function ReviewContent({
     [isZoomIn]
   );
 
+  const handleLikePress = () => {
+    if (isLikeByMe) {
+      deleteReviewLike();
+    } else {
+      addReviewLike();
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.contentText}>{content}</Text> */}
       <ReviewContentText text={content} />
       <Pressable
         style={isZoomIn ? styles.zoomInContainer : styles.zoomOutContainer}
         onPress={() => setIsZoomIn((prev) => !prev)}
       >
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/snack_image.png")}
-          alt="dummy Image"
-          width={imageSize}
-          height={imageSize}
-        />
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/snack_image.png")}
-          alt="dummy Image"
-          width={imageSize}
-          height={imageSize}
-        />
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/snack_image.png")}
-          alt="dummy Image"
-          width={imageSize}
-          height={imageSize}
-        />
+        {imageUrlList.map((url, index) => (
+          <Image
+            key={index}
+            source={{ uri: url }}
+            style={styles.image}
+            alt="dummy Image"
+            width={imageSize}
+            height={imageSize}
+          />
+        ))}
       </Pressable>
-      <LikeButton likeCount={likeCount} clicked={clicked} onPress={() => {}} />
+      <LikeButton likeCount={likeCount} clicked={isLikeByMe} onPress={handleLikePress} />
     </View>
   );
 }
@@ -80,6 +78,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   image: {
+    borderWidth: 1,
     borderRadius: 4,
     borderColor: colors.SLATE_200,
   },

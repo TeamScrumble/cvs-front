@@ -10,10 +10,12 @@ import { colors } from "@/constants";
 type Props = {
   review: Review;
   isLast?: boolean;
+  addReviewLike: (reviewId: number) => void;
+  deleteReviewLike: (reviewId: number) => void;
 }
 
 const ReviewItem = ({
-  review, isLast = false
+  review, isLast = false, addReviewLike, deleteReviewLike
 }: Props) => {
   return (
     <View style={styles.container}>
@@ -23,10 +25,17 @@ const ReviewItem = ({
         profileImage={review.profileImage}
         rating={review.rating}
         lastModifiedAt={review.lastModifiedAt}
-        hasReceipt={false}
+        hasReceipt={review.isReceipt}
       />
       <ReviewStatus reviewScores={review.scores} />
-      <ReviewContent content={review.content} likeCount={review.likeCount} />
+      <ReviewContent
+        content={review.content}
+        likeCount={review.likeCount}
+        imageUrlList={review.imgList}
+        isLikeByMe={review.isLikeByMe}
+        addReviewLike={() => addReviewLike(review.reviewId)}
+        deleteReviewLike={() => deleteReviewLike(review.reviewId)}
+      />
       {!isLast && <Divider borderColor={colors.SLATE_200} style={{ marginTop: 4 }} />}
     </View>
   );

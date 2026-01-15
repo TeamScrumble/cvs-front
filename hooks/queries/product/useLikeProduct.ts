@@ -34,17 +34,17 @@ const useLikeProduct = () => {
 
       return { previousProduct, newProduct };
     },
-    onError: (err, newProduct, context) => {
+    onError: (err, variables, result, context) => {
       queryClient.setQueryData(
         [
           queryKeys.PRODUCT,
           queryKeys.GET_PRODUCT,
-          context?.previousProduct?.product.productId,
+          result?.previousProduct?.product.productId,
         ],
-        context?.previousProduct
+        result?.previousProduct
       );
     },
-    onSettled: (data, error, variables, context) => {
+    onSettled: (data, error, variables, result, context) => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.PRODUCT, queryKeys.GET_PRODUCT, variables],
       });

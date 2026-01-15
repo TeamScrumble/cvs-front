@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
-import { View, StyleSheet, ViewStyle, LayoutRectangle } from "react-native";
-import DropdownTrigger from "./DropdownTrigger";
+import { Portal } from "@gorhom/portal";
+import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { LayoutRectangle, StyleSheet, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import DropdownList from "./DropdownList";
+import DropdownTrigger from "./DropdownTrigger";
 
 export interface DropdownOption<T> {
 	label: string;
@@ -25,33 +26,43 @@ export interface Props<T> {
 	maxHeight?: number;
 }
 
-export default function Dropdown<T>({
-	value,
-	options,
-	placeholder = "선택하세요",
-	onChange,
-	disabled = false,
-	style,
-	dropdownStyle,
-	optionStyle,
-	maxHeight = 190,
-}: Props<T>) {
+export interface DropdownRef {
+	close: () => void;
+}
+
+const Dropdown = forwardRef<DropdownRef, Props<any>>((props, ref) => {
+	const {
+		value,
+		options,
+		placeholder = "선택하세요",
+		onChange,
+		disabled = false,
+		style,
+		dropdownStyle,
+		optionStyle,
+		maxHeight = 190,
+	} = props;
+
 	const [open, setOpen] = useState(false);
 	const [triggerLayout, setTriggerLayout] = useState<LayoutRectangle | null>(null);
 	const triggerRef = useRef<View>(null);
+
+	useImperativeHandle(ref, () => ({
+		close: () => setOpen(false),
+	}));
 
 	const selectedLabel =
 		options.find((o) => o.value === value)?.label ?? "";
 
 	const handleTriggerPress = () => {
-		setOpen((prev) => !prev);
 		triggerRef.current?.measureInWindow((x, y, width, height) => {
 			setTriggerLayout({ x, y, width, height });
+			setOpen((prev) => !prev);
 		});
 	};
 
 	return (
-		<View style={styles.container}>
+		<>
 			<DropdownTrigger
 				ref={triggerRef}
 				label={selectedLabel}
@@ -61,28 +72,26 @@ export default function Dropdown<T>({
 				isOpen={open}
 				onPress={handleTriggerPress}
 			/>
-
-			<DropdownList
-				visible={open}
-				value={value}
-				options={options}
-				width={128}
-				maxHeight={maxHeight}
-				triggerLayout={triggerLayout}
-				dropdownStyle={dropdownStyle}
-				optionStyle={optionStyle}
-				onClose={() => setOpen(false)}
-				onSelect={(v) => {
-					onChange(v);
-					setOpen(false);
-				}}
-			/>
-		</View>
+			<Portal>
+				<DropdownList
+					visible={open}
+					value={value}
+					options={options}
+					triggerLayout={triggerLayout}
+					width={128}
+					maxHeight={maxHeight}
+					dropdownStyle={dropdownStyle}
+					optionStyle={optionStyle}
+					onSelect={(v) => {
+						onChange(v);
+						setOpen(false);
+					}}
+				/>
+			</Portal>
+		</>
 	);
-}
-
-const styles = StyleSheet.create({
-	container: {
-		position: "relative",
-	},
 });
+
+export default Dropdown as <T>(
+	props: Props<T> & { ref?: React.Ref<DropdownRef> }
+) => React.ReactElement;

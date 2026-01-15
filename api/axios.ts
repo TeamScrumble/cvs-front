@@ -21,16 +21,22 @@ const https = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 300 * 1000,
 });
 
 let authTokenRequest: Promise<AuthTokenDTO> | null = null;
 
 https.interceptors.request.use(async (config) => {
   const accessToken = await getSecureStore(tokenKeys.ACCESS);
-  
-  config.headers.Authorization = `Bearer ${accessToken}`;
 
-  console.log("[Interceptor] request.headers.Authorization:", config.headers.Authorization);
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  console.log(
+    "[Interceptor.request] request.headers.Authorization:",
+    config.headers.Authorization
+  );
 
   return config;
 });
@@ -51,22 +57,28 @@ https.interceptors.response.use(
     // console.log("[Interceptor] originalRequest: ", originalRequest);
 
     console.log(
-      "[Interceptor] originalRequest response.status: ",
+      "[Interceptor.error] originalRequest response.status: ",
       response.status
     );
-    console.log("[Interceptor] originalRequest url:", originalRequest.url);
-    console.log("[Interceptor] originalRequest.headers.Authorization:", originalRequest.headers?.Authorization);
     console.log(
-      "[Interceptor] originalRequest __isRetryRequest: ",
+      "[Interceptor.error] originalRequest error:",
+      response.data.error
+    );
+    console.log(
+      "[Interceptor.error] originalRequest url:",
+      originalRequest.url
+    );
+    console.log(
+      "[Interceptor.error] originalRequest __isRetryRequest: ",
       originalRequest.__isRetryRequest
     );
 
     if (response.status === 401 && !originalRequest.__isRetryRequest) {
-      console.log("[Interceptor] try reissue!");
+      console.log("[Interceptor.error] try reissue!");
+      originalRequest.__isRetryRequest = true;
 
       if (!authTokenRequest) {
-        console.log("[Interceptor] activateReissue!");
-        originalRequest.__isRetryRequest = true;
+        console.log("[Interceptor.error] activateReissue!");
         authTokenRequest = activateReissue();
       }
 
@@ -75,12 +87,19 @@ https.interceptors.response.use(
         await saveSecureStore(tokenKeys.ACCESS, accessToken);
         await saveSecureStore(tokenKeys.REFRESH, refreshToken);
         console.log(
-          "[Interceptor] reissue success and retry originalRequest:",
+          "[Interceptor.error] reissue success and retry originalRequest:",
           originalRequest.url
         );
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          Authorization: `Bearer ${accessToken}`,
+        };
         return https(originalRequest);
       } catch (refreshError) {
-        console.log("[Interceptor] catch the refreshError:", refreshError);
+        console.log(
+          "[Interceptor.error] catch the refreshError:",
+          refreshError
+        );
         if (https.defaults.headers.common["Authorization"]) {
           delete https.defaults.headers.common["Authorization"];
         }
@@ -117,7 +136,6 @@ const reissue = async (): Promise<AuthTokenDTO> => {
   const { data } = await axios.post("/api/auth/token/reissue", null, {
     baseURL: BASE_URL,
     headers: {
-      "Content-Type": "application/json",
       "X-Refresh-Token": `Bearer ${refreshToken}`,
     },
   });
