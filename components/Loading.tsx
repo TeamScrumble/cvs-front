@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, View, Easing, Text } from "react-native";
 import Character from "@/assets/images/character.svg";
 import { colors, fonts } from "@/constants";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
 const Loading = () => {
   const translateY = useRef(new Animated.Value(0)).current;
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   text: {
-    fontFamily: fonts.CHAB,
+    fontFamily: fonts.RYURUE,
     fontSize: 16,
     color: colors.MAIN,
   }

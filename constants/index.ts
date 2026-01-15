@@ -39,7 +39,7 @@ const colors = {
 };
 
 const fontMap = {
-  chab: require("@/assets/fonts/chab.ttf"),
+  ryurue: require("@/assets/fonts/ryurue.ttf"),
   regular: require("@/assets/fonts/Pretendard-Regular.ttf"),
   medium: require("@/assets/fonts/Pretendard-Medium.ttf"),
   semiBold: require("@/assets/fonts/Pretendard-SemiBold.ttf"),
@@ -47,7 +47,7 @@ const fontMap = {
 };
 
 const fonts = {
-  CHAB: "chab",
+  RYURUE: "ryurue",
   REGULAR: "regular",
   MEDIUM: "medium",
   SEMI_BOLD: "semiBold",

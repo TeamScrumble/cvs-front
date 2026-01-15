@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontSize: 20,
-    fontFamily: fonts.CHAB,
+    fontFamily: fonts.RYURUE,
     color: colors.MAIN,
   },
   headerContainer: {
