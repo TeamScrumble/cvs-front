@@ -30,9 +30,11 @@ function RedirectScreen() {
     }, [])
   );
 
-  return (<SafeAreaView>
-    <Loading />
-  </SafeAreaView>);
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Loading />
+    </SafeAreaView>
+  );
 }
 
 export default RedirectScreen;

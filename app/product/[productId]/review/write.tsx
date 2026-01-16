@@ -34,9 +34,7 @@ function ReviewWriteScreen() {
       rating: 0,
       aspects: Array(aspectInfo?.length).fill(0),
       content: "",
-      imageUris: [
-        "https://m.cookieall.com/web/product/medium/202312/f3c1ceed50876e02d43c117c420bc159.jpg",
-      ],
+      imageUris: [],
       hasReceipt: false,
     },
   });

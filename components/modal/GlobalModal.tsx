@@ -1,43 +1,50 @@
 import { colors, fonts } from "@/constants";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { GlobalModalPayload } from "@/@types";
+import CustomButton from "../button/CustomButton";
 
 type Props = {
-  visible: boolean;
-  title?: string;
-  content: string;
-  confirmLabel?: string;
-  onPressConfirm?: () => void;
+  payload: GlobalModalPayload;
   onClose: () => void;
 }
 
-const BaseModal = ({
-  visible,
-  title,
-  content,
-  confirmLabel = "확인",
-  onPressConfirm = () => {},
+const GlobalModal = ({
+  payload,
   onClose,
 }: Props) => {
   return (
     <Modal
       transparent
       animationType="fade"
-      visible={visible}
-      onRequestClose={onClose}
     >
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={styles.container}>
           <View style={styles.wrapper}>
-            {title && <Text style={styles.titleText}>{title}</Text>}
-            <Text style={styles.contentText}>{content}</Text>
+            {payload.title && <Text style={styles.titleText}>{payload.title}</Text>}
+            <Text style={styles.contentText}>{payload.content}</Text>
           </View>
-          <Pressable style={styles.buttonContainer} onPress={() => {
-            onClose();
-            onPressConfirm();
-          }}>
-            <Text style={styles.buttonLabel}>{confirmLabel}</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            {payload.cancelLabel &&
+              <CustomButton
+                label={payload.cancelLabel}
+                onPress={() => {
+                  onClose();
+                  payload.onCancel?.();
+                }}
+                variant="border"
+                containerStyle={styles.flexContainer}
+              />
+            }
+            <CustomButton
+              label={payload.confirmLabel ?? "확인"}
+              onPress={() => {
+                onClose();
+                payload.onConfirm?.();
+              }}
+              containerStyle={styles.flexContainer}
+            />
+          </View>
         </Pressable>
       </Pressable>
     </Modal>
@@ -77,19 +84,12 @@ const styles = StyleSheet.create({
     color: colors.NEUTRAL_DARK_LIGHT,
   },
   buttonContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    flexDirection: "row",
     gap: 8,
-    backgroundColor: colors.MAIN,
-    alignItems: "center",
-    borderRadius: 10,
   },
-  buttonLabel: {
-    fontFamily: fonts.SEMI_BOLD,
-    fontSize: 14,
-    lineHeight: 14,
-    color: colors.WHITE,
-  },
+  flexContainer: {
+    flex: 1,
+  }
 });
 
-export default BaseModal;
+export default GlobalModal;

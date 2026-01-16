@@ -7,12 +7,12 @@ import { useFormContext, useWatch } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import { getFormDataImages } from "@/utils/image";
 
-interface UploadImageItemProps {
+type Props = {
   imageUri: string;
   onDeletePress: () => void;
 }
 
-function UploadImageItem({ imageUri, onDeletePress }: UploadImageItemProps) {
+function UploadImageItem({ imageUri, onDeletePress }: Props) {
   return (
     <View style={[styles.boxContainer, { position: "relative" }]}>
       <IconButton

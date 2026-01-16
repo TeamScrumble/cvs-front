@@ -12,7 +12,7 @@ import { REVIEW_ORDER_OPTIONS, REVIEW_SORT_TYPE } from "@/constants/review";
 import useGetInfiniteReviews from "@/hooks/queries/review/useGetInfiniteReviews";
 import useGetReviewSummary from "@/hooks/queries/review/useGetReviewSummary";
 import { useScrollToTop } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import Footer from "../Footer";
 import EmptyReviewSection from "./EmptyReviewSection";

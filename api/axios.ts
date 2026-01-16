@@ -1,5 +1,6 @@
 import { AuthTokenDTO } from "@/@types/dto/authDto";
 import { tokenKeys } from "@/constants/auth";
+import { errorBus } from "@/utils/errorBus";
 import {
   deleteSecureStore,
   getSecureStore,
@@ -72,6 +73,13 @@ https.interceptors.response.use(
       "[Interceptor.error] originalRequest __isRetryRequest: ",
       originalRequest.__isRetryRequest
     );
+
+    if (response.status !== 401) {
+      errorBus.emit({
+        code: response.data.error.code,
+        description: response.data.error.description,
+      });
+    }
 
     if (response.status === 401 && !originalRequest.__isRetryRequest) {
       console.log("[Interceptor.error] try reissue!");

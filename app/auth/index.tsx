@@ -42,7 +42,7 @@ export default function AuthScreen() {
       </View>
       <View style={styles.logoContainer}>
         <Character width={66} height={64} />
-        <Text style={{ fontFamily: "chab", color: colors.MAIN, fontSize: 40 }}>
+        <Text style={{ fontFamily: fonts.RYURUE, color: colors.MAIN, fontSize: 40 }}>
           편:편
         </Text>
       </View>
