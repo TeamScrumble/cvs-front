@@ -29,11 +29,11 @@ const ExpandButton = ({
   );
 };
 
-interface ReviewStatusProps {
+type Props = {
   productId: number;
 }
 
-function ReviewStatus({ productId }: ReviewStatusProps) {
+const ReviewStatus = ({ productId }: Props) => {
   const { data } = useGetReviewSummary(productId);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,7 +45,7 @@ function ReviewStatus({ productId }: ReviewStatusProps) {
         options: v.options.map((op) => ({
           label: op.optionText,
           value: op.count,
-        })),
+        })).sort((a, b) => b.value - a.value),
       })) ?? []
     );
   }, [data]);

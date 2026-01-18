@@ -1,5 +1,6 @@
-// @@iconify-code-gen
+import "react-native-reanimated";
 
+// @@iconify-code-gen
 import queryClient from "@/api/queryClient";
 import { fontMap } from "@/constants";
 import { PortalProvider } from "@gorhom/portal";
@@ -9,13 +10,13 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { ReactNode, useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
 import { queryKeys } from "@/constants/queryKey";
 import { getMe } from "@/api/member";
 import { getReviewAspectInfo, getReviewReportReason } from "@/api/review";
 import { ModalProvider } from "@/components/modal/ModalProvider";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 // 스플래시 스크린이 자동으로 숨겨지지 않도록 설정
 SplashScreen.preventAutoHideAsync();
@@ -41,16 +42,18 @@ const PreloadQueries = () => {
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <PreloadQueries />
-      <PortalProvider>
-        <ModalProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            {children}
-          </GestureHandlerRootView>
-        </ModalProvider>
-      </PortalProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <PreloadQueries />
+        <PortalProvider>
+          <BottomSheetModalProvider>
+            <ModalProvider>
+              {children}
+            </ModalProvider>
+          </BottomSheetModalProvider>
+        </PortalProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -85,18 +88,6 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="product" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
-        <Stack.Screen
-          name="store-selection"
-          options={{
-            presentation: "transparentModal",
-            headerShown: false,
-            animation: "fade",
-          }}
-        />
       </Stack>
     </Providers>
   );

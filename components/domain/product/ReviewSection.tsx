@@ -1,24 +1,24 @@
 import { ReviewFilter } from "@/@types/review";
+import SelectBottomSheet from "@/components/bottomSheet/SelectBottomSheet";
 import Divider from "@/components/Divider";
 import DetailReviewBar from "@/components/domain/product/DetailReviewBar";
 import ReviewStatus from "@/components/domain/product/ReviewStatus";
 import ReviewItem from "@/components/domain/review/ReviewItem";
 import ViewAllReviewButton from "@/components/domain/review/ViewAllReviewButton";
-import Dropdown, { DropdownRef } from "@/components/dropdown/Dropdown";
 import SegmentedControl from "@/components/SegmentedControl";
 import Toggle from "@/components/Toggle";
 import { colors, fonts } from "@/constants";
 import { REVIEW_ORDER_OPTIONS, REVIEW_SORT_TYPE } from "@/constants/review";
+import useAddReviewLike from "@/hooks/queries/review/useAddReviewLike";
+import useDeleteReviewLike from "@/hooks/queries/review/useDeleteReviewLike";
 import useGetInfiniteReviews from "@/hooks/queries/review/useGetInfiniteReviews";
 import useGetReviewSummary from "@/hooks/queries/review/useGetReviewSummary";
 import { useScrollToTop } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import Footer from "../Footer";
-import EmptyReviewSection from "./EmptyReviewSection";
 import ReviewItemSkeleton from "../review/ReviewItemSkeleton";
-import useAddReviewLike from "@/hooks/queries/review/useAddReviewLike";
-import useDeleteReviewLike from "@/hooks/queries/review/useDeleteReviewLike";
+import EmptyReviewSection from "./EmptyReviewSection";
 
 type Props = {
   productId: number;
@@ -31,7 +31,7 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
   const [filter, setFilter] = useState<ReviewFilter>({
     receiptOnly: false,
     imageOnly: false,
-    sort: REVIEW_SORT_TYPE.LATEST,
+    sort: REVIEW_SORT_TYPE.RECOMMENDED,
   });
   const { data: summary } = useGetReviewSummary(productId);
   const {
@@ -46,7 +46,6 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
   const deleteReviewLike = useDeleteReviewLike(productId, filter);
 
   const ref = useRef<FlatList | null>(null);
-  const dropdownRef = useRef<DropdownRef>(null);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -65,10 +64,6 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
     await refetch()
     setIsRefreshing(false);
   }, [refetch]);
-
-  const handleScrollBeginDrag = useCallback(() => {
-    dropdownRef.current?.close();
-  }, [dropdownRef, dropdownRef.current]);
 
   return (
     <>
@@ -125,17 +120,15 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
                       <Text style={styles.toggleLabelText}>사진후기만</Text>
                     </View>
                     {/* 정렬 셀렉트 */}
-                    <Dropdown
-                      ref={dropdownRef}
+                    <SelectBottomSheet
                       value={filter.sort}
-                      placeholder=""
+                      options={REVIEW_ORDER_OPTIONS}
                       onChange={(v) =>
                         setFilter((prev) => ({
                           ...prev,
                           sort: v
                         }))
                       }
-                      options={REVIEW_ORDER_OPTIONS}
                     />
                   </View>
                   <Divider borderColor={colors.SLATE_200} />
@@ -152,7 +145,6 @@ const ReviewSection = ({ productId, infiniteScroll = false, HeaderComponent, Foo
         onEndReachedThreshold={0.5} // 0.5인 경우 하단에 완전히 닿지 않아도 onEndReached를 트리거함
         refreshing={isRefreshing}
         onRefresh={handleRefresh}
-        onScrollBeginDrag={handleScrollBeginDrag}
         ListFooterComponent={() => (!infiniteScroll && (<>
           {summary?.totalCount > 0 && <ViewAllReviewButton totalReviews={summary?.totalCount ?? 0} productId={productId} />}
           <Footer />

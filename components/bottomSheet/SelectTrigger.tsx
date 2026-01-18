@@ -1,53 +1,34 @@
-import React, { Ref } from "react";
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  View,
-} from "react-native";
+import { colors, fonts, icons } from "@/constants";
+import { StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import Icon from "react-native-iconify";
-import { icons, colors, fonts } from "@/constants";
 
-interface DropdownTriggerProps {
+type Props = {
   label: string;
-  placeholder: string;
-  disabled: boolean;
-  isOpen: boolean;
+  placeholder?: string;
+  disabled?: boolean;
   style?: ViewStyle;
-  ref?: Ref<View>;
-
   onPress: () => void;
 }
 
-export default function DropdownTrigger({
-  label,
-  placeholder,
-  disabled,
-  isOpen,
-  style,
-  ref,
-  onPress,
-}: DropdownTriggerProps) {
+const SelectTrigger = ({ label, placeholder, disabled, style, onPress }: Props) => {
   return (
     <TouchableOpacity
-      ref={ref}
       onPress={() => !disabled && onPress()}
-      style={[styles.trigger, style]}
+      style={[styles.container, style]}
       activeOpacity={0.8}
     >
       <Text style={styles.label}>{label || placeholder}</Text>
       <Icon
-        icon={isOpen ? icons.expandLess : icons.expandMore}
+        icon={icons.expandMore}
         size={16}
         color={colors.SLATE_500}
       />
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  trigger: {
+  container: {
     backgroundColor: colors.WHITE,
     borderColor: colors.SLATE_200,
     borderRadius: 4,
@@ -67,3 +48,5 @@ const styles = StyleSheet.create({
     color: colors.SLATE_500,
   },
 });
+
+export default SelectTrigger;

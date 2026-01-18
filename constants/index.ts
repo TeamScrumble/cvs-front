@@ -81,6 +81,7 @@ const icons = {
   xCircleFill: "ph:x-circle-fill",
   checkCircle: "material-symbols-light:check-circle-rounded",
   circleOutline: "material-symbols-light:circle-outline",
+  check: "material-symbols-light:check-rounded",
 };
 
 export { colors, fontMap, fonts, icons };
