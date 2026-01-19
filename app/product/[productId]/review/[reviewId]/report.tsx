@@ -1,18 +1,18 @@
+import CustomButton from "@/components/ui/button/CustomButton";
+import BaseModal from "@/components/ui/modal/BaseModal";
+import RadioSentence from "@/components/ui/radioSentence/RadioSentence";
+import TextArea from "@/components/ui/textArea/TextArea";
 import { colors, fonts, icons } from "@/constants";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "react-native-iconify";
-import TextArea from "@/components/textArea/TextArea";
-import { FormProvider, useForm } from "react-hook-form";
-import { isBlank, maxLength, minLength } from "@/rules";
-import { router, useLocalSearchParams } from "expo-router";
-import RadioSentence from "@/components/radioSentence/RadioSentence";
-import BaseModal from "@/components/modal/BaseModal";
-import { toPositiveInt } from "@/utils";
-import useGetReviewReportReason from "@/hooks/queries/review/useGetReviewReportReason";
 import useCreateReviewReport from "@/hooks/queries/review/useCreateReviewReport";
-import CustomButton from "@/components/button/CustomButton";
+import useGetReviewReportReason from "@/hooks/queries/review/useGetReviewReportReason";
+import { isBlank, maxLength, minLength } from "@/rules";
+import { toPositiveInt } from "@/utils";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import Icon from "react-native-iconify";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormValues = {
   reasonCode: string;
@@ -46,7 +46,7 @@ function ReportScreen() {
   const onSubmit = (formValues: FormValues) => {
     createReport.mutate({
       reviewId: reviewIdNum,
-      request: formValues
+      request: formValues,
     });
   };
 

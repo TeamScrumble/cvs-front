@@ -1,15 +1,18 @@
 import { brands, BrandType } from "@/@types/brand";
-import CustomBottomSheetModal from "@/components/bottomSheet/CustomBottomSheetModal";
-import CustomButton from "@/components/button/CustomButton";
-import IconButton from "@/components/button/IconButton";
-import BrandIcon from "@/components/domain/BrandIcon";
+import BrandIcon from "@/components/feature/BrandIcon";
+import CustomBottomSheetModal from "@/components/ui/bottomSheet/CustomBottomSheetModal";
+import CustomButton from "@/components/ui/button/CustomButton";
+import IconButton from "@/components/ui/button/IconButton";
 import { colors, fonts, icons } from "@/constants";
-import useBottomSheetModal from "@/hooks/useBottomSheetModal";
+import useBottomSheetModal from "@/hooks/ui/useBottomSheetModal";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-iconify";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -38,15 +41,16 @@ export default function HomeScreen() {
           <IconButton icon={icons.alert} hasDot />
         </View>
       </View>
-      <View
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <CustomButton
           label="상세화면으로 이동"
           onPress={() => router.push("/product/3")}
         />
       </View>
-      <CustomBottomSheetModal ref={bottomSheetModalRef} snapPoints={[258 + insets.bottom]}>
+      <CustomBottomSheetModal
+        ref={bottomSheetModalRef}
+        snapPoints={[258 + insets.bottom]}
+      >
         <View style={styles.contentContainer}>
           {Object.entries(brands).map(([key, brand], index) => (
             <TouchableOpacity
@@ -56,9 +60,7 @@ export default function HomeScreen() {
             >
               <View style={styles.leftContainer}>
                 <BrandIcon brandType={key as BrandType} />
-                <Text
-                  style={[styles.storeName, { fontFamily: fonts.MEDIUM }]}
-                >
+                <Text style={[styles.storeName, { fontFamily: fonts.MEDIUM }]}>
                   {brand.name}
                 </Text>
               </View>

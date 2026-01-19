@@ -1,4 +1,4 @@
-import { loginProvider } from "@/constants/login";
+import { loginProvider } from "@/constants/auth";
 
 // Common Response
 export type CR<T> = {

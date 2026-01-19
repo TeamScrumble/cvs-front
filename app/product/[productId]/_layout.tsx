@@ -1,6 +1,6 @@
-import { router, Stack } from "expo-router";
+import IconButton from "@/components/ui/button/IconButton";
 import { colors, icons } from "@/constants";
-import IconButton from "@/components/button/IconButton";
+import { router, Stack } from "expo-router";
 
 export default function ProductLayout() {
   return (
@@ -28,15 +28,14 @@ export default function ProductLayout() {
           },
           headerRight: () => {
             return (
-              <IconButton 
+              <IconButton
                 icon={icons.search}
                 size={24}
                 color={colors.SLATE_800}
-                onPress={() => {}}
+                onPress={() => { }}
               />
-            )
-          }
-
+            );
+          },
         }}
       />
       <Stack.Screen

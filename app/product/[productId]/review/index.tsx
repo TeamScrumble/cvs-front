@@ -1,5 +1,5 @@
-import ReviewSection from "@/components/domain/product/ReviewSection";
-import BottomBar from "@/components/domain/review/BottomBar";
+import BottomBar from "@/components/feature/product/BottomBar";
+import ReviewSection from "@/components/feature/review/summary/ReviewSection";
 import { colors, fonts } from "@/constants";
 import { toPositiveInt } from "@/utils/index";
 import { useLocalSearchParams } from "expo-router";
@@ -22,7 +22,7 @@ const ReviewDetailScreen = () => {
       <BottomBar productId={productIdNum} />
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

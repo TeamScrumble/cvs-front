@@ -3,4 +3,11 @@ const tokenKeys = {
   ACCESS: "accessToken",
 };
 
-export { tokenKeys };
+const loginProvider = {
+  KAKAO: "kakao",
+  NAVER: "naver",
+  GOOGLE: "google",
+  EMAIL: "email",
+} as const;
+
+export { tokenKeys, loginProvider };

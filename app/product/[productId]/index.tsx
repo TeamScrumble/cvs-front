@@ -1,7 +1,7 @@
-import ProductSection from "@/components/domain/product/ProductSection";
-import ReviewSection from "@/components/domain/product/ReviewSection";
-import BottomBar from "@/components/domain/review/BottomBar";
-import Loading from "@/components/Loading";
+import BottomBar from "@/components/feature/product/BottomBar";
+import ProductSection from "@/components/feature/product/ProductSection";
+import ReviewSection from "@/components/feature/review/summary/ReviewSection";
+import Loading from "@/components/layout/Loading";
 import { toPositiveInt } from "@/utils/index";
 import { useLocalSearchParams } from "expo-router";
 import React, { Suspense } from "react";
@@ -26,7 +26,7 @@ const ProductDetailScreen = () => {
       </Suspense>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

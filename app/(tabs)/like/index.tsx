@@ -1,4 +1,4 @@
-import AuthRoute from "@/components/auth/AuthRoute";
+import AuthRoute from "@/components/feature/auth/AuthRoute";
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 

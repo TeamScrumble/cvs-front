@@ -3,10 +3,10 @@ import Character from "@/assets/images/character.svg";
 import GoogleLoginIcon from "@/assets/images/login/google_login_icon.svg";
 import KakaoLoginIcon from "@/assets/images/login/kakao_login_icon.svg";
 import NaverLoginIcon from "@/assets/images/login/naver_login_icon.svg";
-import CustomButton from "@/components/button/CustomButton";
-import Tooltip from "@/components/tooltip/Tooltip";
+import CustomButton from "@/components/ui/button/CustomButton";
+import Tooltip from "@/components/ui/tooltip/Tooltip";
 import { colors, fonts } from "@/constants";
-import { loginProvider } from "@/constants/login";
+import { loginProvider } from "@/constants/auth";
 import { useAuthAction } from "@/hooks/queries/useAuth";
 import { getSecureStore } from "@/utils/secureStore";
 import { router } from "expo-router";
@@ -42,7 +42,9 @@ export default function AuthScreen() {
       </View>
       <View style={styles.logoContainer}>
         <Character width={66} height={64} />
-        <Text style={{ fontFamily: fonts.RYURUE, color: colors.MAIN, fontSize: 40 }}>
+        <Text
+          style={{ fontFamily: fonts.RYURUE, color: colors.MAIN, fontSize: 40 }}
+        >
           편:편
         </Text>
       </View>
@@ -99,7 +101,7 @@ export default function AuthScreen() {
             width: "100%",
             borderRadius: 100,
           }}
-          onPress={() => {}}
+          onPress={() => { }}
         />
       </View>
       <View style={styles.helpButtonContainer}>
@@ -113,7 +115,7 @@ export default function AuthScreen() {
             paddingVertical: 10,
             paddingHorizontal: 12,
           }}
-          onPress={() => {}}
+          onPress={() => { }}
         />
       </View>
     </SafeAreaView>

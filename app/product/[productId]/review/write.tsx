@@ -1,8 +1,8 @@
-import CustomButton from "@/components/button/CustomButton";
-import ProductSummary from "@/components/domain/review/write/ProductSummary";
-import Radio from "@/components/radio/Radio";
-import TextArea from "@/components/textArea/TextArea";
-import UploadImage from "@/components/UploadImage";
+import ProductSummary from "@/components/feature/product/summary/ProductSummary";
+import CustomButton from "@/components/ui/button/CustomButton";
+import Radio from "@/components/ui/radio/Radio";
+import TextArea from "@/components/ui/textArea/TextArea";
+import UploadImage from "@/components/ui/UploadImage";
 import { colors, fonts } from "@/constants";
 import useCreateReview from "@/hooks/queries/review/useCreateReview";
 import useGetReviewAspectInfo from "@/hooks/queries/review/useGetReviewAspectInfo";
